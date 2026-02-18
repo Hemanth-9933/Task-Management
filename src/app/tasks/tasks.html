@@ -1,0 +1,181 @@
+<div class="tasks-container">
+
+  <div class="header">
+    <h2>All Tasks</h2>
+    <div class="header-buttons">
+      <img src="/icons/filters.png" alt="Show Filters" (click)="showFilters = !showFilters" class="filter-icon" />Filters
+      <button (click)="toggleCreateTaskForm()">Create New Task</button>
+    </div>
+  </div>
+
+  <div *ngIf="showFilters" class="filters-section">
+    <div class="filter-group">
+      <label>Status:</label>
+      <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option value="">All</option>
+        <option>To Do</option>
+        <option>In Progress</option>
+        <option>Done</option>
+        <option>On Hold</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Priority:</label>
+      <select [(ngModel)]="priorityFilter" (change)="applyFilters()">
+        <option value="">All</option>
+        <option>low</option>
+        <option>medium</option>
+        <option>high</option>
+        <option>urgent</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Assigned:</label>
+      <input type="text" [(ngModel)]="assignedFilter" (input)="applyFilters()" placeholder="Search by name">
+    </div>
+  </div>
+
+  <div *ngIf="showCreateTaskForm" class="create-form">
+    <h3>Create New Task</h3>
+    <form (ngSubmit)="createTask()" #newTaskForm="ngForm">
+      <div class="form-group">
+        <label>Title:</label>
+        <input type="text" [(ngModel)]="newTask.title" name="title" required>
+      </div>
+      <div class="form-group">
+        <label>Description:</label>
+        <textarea [(ngModel)]="newTask.description" name="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Status:</label>
+        <select [(ngModel)]="newTask.status" name="status">
+          <option>To Do</option>
+          <option>In Progress</option>
+          <option>Done</option>
+          <option>On Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority:</label>
+        <select [(ngModel)]="newTask.priority" name="priority">
+          <option>low</option>
+          <option>medium</option>
+          <option>high</option>
+          <option>urgent</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned:</label>
+        <input type="text" [(ngModel)]="newTask.assigned" name="assigned">
+      </div>
+      <div class="form-group">
+        <label>Due Date:</label>
+        <input type="date" [(ngModel)]="newTask.dueDate" name="dueDate">
+      </div>
+      <div class="form-group">
+        <label>Project:</label>
+        <select [(ngModel)]="newTask.projectId" name="projectId" required>
+          <option [ngValue]="null">Select Project</option>
+          <option *ngFor="let p of projects" [ngValue]="p.id">{{ p.title }}</option>
+        </select>
+      </div>
+      <button type="submit" [disabled]="!newTaskForm.valid">Create Task</button>
+      <button type="button" (click)="toggleCreateTaskForm()">Cancel</button>
+    </form>
+  </div>
+
+  <div *ngIf="editingTask" class="edit-form">
+    <h3>Edit Task</h3>
+    <form (ngSubmit)="saveEditedTask()" #editForm="ngForm">
+      <div class="form-group">
+        <label>Title:</label>
+        <input type="text" [(ngModel)]="editTaskForm.title" name="title" required>
+      </div>
+      <div class="form-group">
+        <label>Description:</label>
+        <textarea [(ngModel)]="editTaskForm.description" name="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Status:</label>
+        <select [(ngModel)]="editTaskForm.status" name="status">
+          <option>To Do</option>
+          <option>In Progress</option>
+          <option>Done</option>
+          <option>On Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority:</label>
+        <select [(ngModel)]="editTaskForm.priority" name="priority">
+          <option>low</option>
+          <option>medium</option>
+          <option>high</option>
+          <option>urgent</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned:</label>
+        <input type="text" [(ngModel)]="editTaskForm.assigned" name="assigned">
+      </div>
+      <div class="form-group">
+        <label>Due Date:</label>
+        <input type="date" [(ngModel)]="editTaskForm.dueDate" name="dueDate">
+      </div>
+      <button type="submit" [disabled]="!editForm.valid">Save Changes</button>
+      <button type="button" (click)="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+
+  <table *ngIf="filteredTasks.length">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Assigned</th>
+        <th>Due Date</th>
+        <th>Project</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let t of filteredTasks" (click)="viewTask(t)" class="task-row">
+        <td class="task-title">{{ t.title }}</td>
+        <td>{{ t.status }}</td>
+        <td>{{ t.priority }}</td>
+        <td>{{ t.assigned }}</td>
+        <td>{{ t.dueDate }}</td>
+        <td>{{ t.projectTitle }}</td>
+        <td>
+          <span class="action-icon emoji-icon" (click)="updateTask(t); $event.stopPropagation()">✏️</span>
+          <img src="/icons/delete.png" alt="Delete" (click)="deleteTask(t); $event.stopPropagation()" class="action-icon" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!filteredTasks.length" class="no-tasks">No tasks found</p>
+
+  <div *ngIf="selectedTask" class="modal-overlay" (click)="closeTaskDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h3>{{ selectedTask.title }}</h3>
+        <button class="close-btn" (click)="closeTaskDetails()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <span class="badge">{{ selectedTask.status }}</span>
+        <span class="badge yellow">{{ selectedTask.priority }}</span>
+
+        <p><strong>Assigned:</strong> {{ selectedTask.assigned }}</p>
+        <p><strong>Due:</strong> {{ selectedTask.dueDate }}</p>
+        <p><strong>Project:</strong> {{ selectedTask.projectTitle }}</p>
+        <p><strong>Description:</strong> {{ selectedTask.description }}</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>

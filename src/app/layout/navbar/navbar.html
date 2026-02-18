@@ -1,0 +1,57 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="logo">SakNgTrain</span>
+  </div>
+
+  <div class="nav-center">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/projects" routerLinkActive="active">Projects</a>
+    <a routerLink="/tasks" routerLinkActive="active">Tasks</a>
+    <a routerLink="/board" routerLinkActive="active">Board</a>
+  </div>
+
+  <div class="nav-right">
+    <span class="user">
+      <i class="icon">👤</i>
+      <span (click)="goToProfile()" class="user-email">
+        {{ loggedInUser?.email }}
+      </span>
+    </span>
+
+    <img src="/icons/logout.png"
+         alt="Logout"
+         class="logout-btn"
+         (click)="logout()" />
+  </div>
+
+  <!-- ===== EXACT LOGOUT MODAL ===== -->
+  <div class="logout-overlay" *ngIf="showLogoutConfirm">
+    <div class="logout-card">
+
+      <!-- HEADER -->
+      <div class="logout-header">
+        <span>LOGOUT</span>
+        <span class="close-btn" (click)="cancelLogout()">✕</span>
+      </div>
+
+      <!-- BODY -->
+      <div class="logout-body">
+        <p class="title">Are you sure you want to logout?</p>
+
+        <p>You will be logged out and redirected to the login page.</p>
+        <p>Your session data will be cleared for security.</p>
+
+        <div class="logout-actions">
+          <button class="btn-logout" (click)="confirmLogout()">
+            Logout
+          </button>
+
+          <button class="btn-cancel" (click)="cancelLogout()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</nav>

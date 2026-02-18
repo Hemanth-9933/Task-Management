@@ -1,0 +1,58 @@
+<div class="profile-page">
+  <div class="page-header">
+    <div>
+      <h1>My Profile</h1>
+      <p>Manage your profile and details</p>
+    </div>
+    <button class="edit-top-btn" *ngIf="!isEditing" (click)="toggleEdit()">Edit Profile</button>
+  </div>
+
+  <div class="profile-card" *ngIf="user">
+    <h3>Profile Information</h3>
+    <p class="subtitle">View and manage your account details</p>
+
+    <div class="profile-body">
+      <div class="photo-section">
+        <img
+          [src]="user.profilePhoto || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjUwIiBmaWxsPSIjRDBEMDBEIi8+PC9zdmc+'"
+          class="profile-img"
+        />
+        <input *ngIf="isEditing" type="file" accept="image/*" (change)="onFileSelected($event)" />
+      </div>
+
+      <div class="info-section" *ngIf="!isEditing">
+        <div class="info-item">
+          <label>Name</label>
+          <span>{{ user.username }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Email</label>
+          <span>{{ user.email }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Account Created</label>
+          <span>{{ user.createdAt | date:'MMM d, y, h:mm a' }}</span>
+        </div>
+      </div>
+
+      <div class="info-section" *ngIf="isEditing">
+        <div class="form-group">
+          <label>Name</label>
+          <input [(ngModel)]="editedUser.username" />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input [(ngModel)]="editedUser.email" />
+        </div>
+
+        <div class="button-row">
+          <button class="save-btn" (click)="saveChanges()">Save Changes</button>
+          <button class="cancel-btn" (click)="toggleEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

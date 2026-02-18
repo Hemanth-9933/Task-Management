@@ -1,0 +1,80 @@
+<div class="projects-page">
+
+  <div class="top-bar">
+    <div class="left">
+      <h1>Projects</h1>
+      <p>Manage your projects and tasks</p>
+    </div>
+
+    <button class="create-btn" (click)="goToCreateProject()">
+      Create New Project
+    </button>
+  </div>
+
+  <div class="controls">
+
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search projects by name..."
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+      />
+    </div>
+
+    <div class="right-controls">
+      <select [(ngModel)]="sortOption" (change)="applyFilters()">
+        <option>Name A–Z</option>
+        <option>Name Z–A</option>
+      </select>
+
+      <button class="filter-btn" (click)="toggleFilters()">
+        <img src="/icons/filters.png" alt="filter" />
+        Filter
+      </button>
+    </div>
+
+  </div>
+
+  <div class="filter-panel" *ngIf="showFilters">
+    <!-- <div class="filter-title">Status</div> -->
+
+    <div class="status-options">
+      <label *ngFor="let s of statuses">
+        <input type="checkbox" [value]="s" (change)="onStatusChange($event)" />
+        <span class="pill" [ngClass]="statusClassMap[s]">{{ s }}</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="project-list">
+    <div
+      class="project-card"
+      *ngFor="let p of filteredProjects; let i = index"
+      (click)="openProject(p.id)"
+    >
+      <div class="project-header">
+        <h3 title="{{ p.title }}">{{ p.title }}</h3>
+        <span class="status-pill" [ngClass]="p.statusClass">
+          {{ p.status }}
+        </span>
+      </div>
+
+      <p class="desc">{{ p.desc }}</p>
+
+      <div class="meta">
+        <div>📅 {{ p.start | date:'dd/MM/yy' }} - {{ p.end | date:'dd/MM/yy' }}</div>
+        <div>📝 {{ p.taskCount || 0 }} tasks</div>
+      </div>
+
+      <div class="index">{{ (i + 1) | number:'2.0' }}</div>
+    </div>
+  </div>
+
+  <div class="connect">
+    <h2>Connect with us</h2>
+    <p>Raise a ticket for any query.</p>
+    <button>Learn More →</button>
+  </div>
+
+</div>

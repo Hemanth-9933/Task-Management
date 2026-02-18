@@ -1,0 +1,71 @@
+<div class="dashboard-container">
+
+  <h2 class="title">Overview of your projects and tasks</h2>
+
+  <div class="cards-grid">
+    <div class="card blue">
+      <h4>Total Projects</h4>
+      <img src="/icons/totalprojects.png" alt="totalproj">
+      <h2>{{ totalProjects }}</h2>
+      <span>Total</span>
+    </div>
+
+    <div class="card purple">
+      <h4>Active Projects</h4>
+      <img src="/icons/activeprojects.png" alt="activeproj">
+      <h2>{{ activeProjects }}</h2>
+      <span>Active</span>
+    </div>
+
+    <div class="card green">
+      <h4>Completed Projects</h4>
+      <img src="/icons/completedprojects.png" alt="completedproj">
+      <h2>{{ completedProjects }}</h2>
+      <span>Completed</span>
+    </div>
+
+    <div class="card blue">
+      <h4>Completion Rate</h4>
+      <img src="/icons/completionrate.png" alt="completionproj">
+      <h2>{{ completionRate }}%</h2>
+      <span>Rate</span>
+    </div>
+
+    <div class="card green">
+      <h4>Completed Tasks</h4>
+      <h2>{{ completed }}</h2>
+      <span>Completed</span>
+    </div>
+
+    <div class="card purple">
+      <h4>In Progress Tasks</h4>
+      <h2>{{ inProgress }}</h2>
+      <span>In Progress</span>
+    </div>
+
+    <div class="card red">
+      <h4>Overdue Tasks</h4>
+      <h2>{{ overdue }}</h2>
+      <span>Overdue</span>
+    </div>
+
+    <div class="card white">
+      <h4>Total Tasks</h4>
+      <h2>{{ totalTasks }}</h2>
+      <span>Total</span>
+    </div>
+  </div>
+
+  <div class="charts-section">
+    <div class="chart-box">
+      <h3>Task Completion</h3>
+      <canvas id="completionChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Priority Distribution</h3>
+      <canvas id="priorityChart"></canvas>
+    </div>
+  </div>
+
+</div>

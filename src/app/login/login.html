@@ -1,0 +1,54 @@
+<div class="login-wrapper">
+  <h1 class="page-title">Login</h1>
+
+  <div class="login-card">
+    <div class="welcome">
+<img src="/icons/login.png" alt="Login Icon" class="welcome-icon" />
+      <div>
+        <h3>Welcome Back</h3>
+        <p>Login to access your task management dashboard</p>
+      </div>
+    </div>
+
+    <form (ngSubmit)="login()">
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        [(ngModel)]="email"
+        name="email"
+        required
+      />
+
+      <label>Password</label>
+      <input
+        type="password"
+        placeholder="Enter your password"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+
+      <div class="row">
+        <label class="remember">
+          <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+          Remember me
+        </label>
+
+        <a class="forgot" routerLink="/forgetpassword">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="login-btn">Login</button>
+
+      <p class="register">
+        Don’t have an account?
+      </p>
+
+      <button type="button" class="create-btn" routerLink="/register">
+        Create Account
+      </button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="register-wrapper">
+  <h1>Register</h1>
+
+  <div class="card">
+    <h3>Create Account</h3>
+    <p class="subtitle">
+      Register for an account to access the task management application
+    </p>
+      <h3 class="error" *ngIf="error">{{ error }}</h3>
+
+    <form (ngSubmit)="register()">
+      <label>Full Name</label>
+      <input
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="Enter your full name"
+        required
+      />
+
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="Enter your email"
+        required
+      />
+
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Create a strong password"
+        required
+      />
+
+      <label>Confirm Password</label>
+      <input
+        type="password"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        placeholder="Re-enter your password"
+        required
+      />
+
+      <div class="actions">
+        <button type="submit" class="primary">Register</button>
+        <button type="button" class="cancel" (click)="cancel()">Cancel</button>
+      </div>
+
+      <button class="back" type="button" routerLink="/login"  >
+        ← Back to Login
+      </button>
+
+    </form>
+  </div>
+</div>

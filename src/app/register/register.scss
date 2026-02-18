@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
+}
+
+.card {
+  width: 400px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 16px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input {
+      padding: 11px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+
+      .primary {
+        flex: 1;
+        background: #556b2f;
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px;
+        border: none;
+      }
+
+      .cancel {
+        background: #eee;
+        border-radius: 999px;
+        padding: 10px 16px;
+        border: none;
+      }
+    }
+
+    .back {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      background: #fff;
+    }
+  }
+}

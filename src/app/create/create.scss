@@ -1,0 +1,93 @@
+.create-wrapper {
+  padding: 40px 60px;
+
+  h1 {
+    font-size: 34px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    color: #666;
+    margin-bottom: 25px;
+  }
+
+  .card {
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 14px;
+    max-width: 900px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+
+    .helper {
+      color: #777;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 30px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+
+      &.invalid {
+        border-color: #e53935;
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: none;
+    }
+
+    .desc-box {
+      margin-top: 18px;
+    }
+
+    .error {
+      color: #e53935;
+      font-size: 12px;
+      margin-top: 4px;
+      display: block;
+    }
+    .req{
+        color:red;
+    }
+
+    .actions {
+      margin-top: 25px;
+      display: flex;
+      gap: 14px;
+
+      .primary {
+        background: #b9cf38;
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+      .ghost {
+        background: #f2f2f2;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+    }
+  }
+}
