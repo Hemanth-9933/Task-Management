@@ -1,0 +1,1 @@
+import{g as i}from"./chunk-FPE6HGOE.js";import{Fa as r,Ka as n}from"./chunk-5TTR76IQ.js";var c=class e{constructor(t){this.router=t;this.router.navigate(["/login"])}static \u0275fac=function(o){return new(o||e)(r(i))};static \u0275cmp=n({type:e,selectors:[["app-root-redirect"]],decls:0,vars:0,template:function(o,p){},encapsulation:2})};export{c as RootRedirectComponent};
