@@ -18,11 +18,16 @@ export class TasksComponent implements OnInit {
   tasks: any[] = [];
   filteredTasks: any[] = [];
 
+  /* OLD FILTERS (kept for compatibility) */
   statusFilter = '';
   priorityFilter = '';
   assignedFilter = '';
-  dueDateFrom = '';
-  dueDateTo = '';
+
+  /* NEW MULTI FILTER ARRAYS */
+  selectedStatuses: string[] = [];
+  selectedPriorities: string[] = [];
+  selectedAssignees: string[] = [];
+
   showFilters = false;
   showCreateTaskForm = false;
 
@@ -55,26 +60,88 @@ export class TasksComponent implements OnInit {
     this.taskService.projects$.subscribe(projects => {
       this.projects = projects;
       this.tasks = [];
+
       projects.forEach((p: any) => {
         p.tasks.forEach((t: any) => {
           this.tasks.push({ ...t, projectId: p.id, projectTitle: p.title });
         });
       });
+
       this.applyFilters();
       this.cdr.detectChanges();
     });
   }
 
+  /* ================= FILTER LOGIC ================= */
+
+  onStatusChange(event: any) {
+    const value = event.target.value;
+
+    if (event.target.checked) {
+      this.selectedStatuses.push(value);
+    } else {
+      this.selectedStatuses =
+        this.selectedStatuses.filter(s => s !== value);
+    }
+
+    this.applyFilters();
+  }
+
+  onPriorityChange(event: any) {
+    const value = event.target.value;
+
+    if (event.target.checked) {
+      this.selectedPriorities.push(value);
+    } else {
+      this.selectedPriorities =
+        this.selectedPriorities.filter(p => p !== value);
+    }
+
+    this.applyFilters();
+  }
+
+  onAssignedChange(event: any) {
+    const value = event.target.value;
+
+    if (event.target.checked) {
+      this.selectedAssignees.push(value);
+    } else {
+      this.selectedAssignees =
+        this.selectedAssignees.filter(a => a !== value);
+    }
+
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.selectedStatuses = [];
+    this.selectedPriorities = [];
+    this.selectedAssignees = [];
+    this.applyFilters();
+  }
+
   applyFilters() {
     this.filteredTasks = this.tasks.filter(t => {
-      return (!this.statusFilter || t.status === this.statusFilter) &&
-             (!this.priorityFilter || t.priority === this.priorityFilter) &&
-             (!this.assignedFilter || t.assigned?.toLowerCase().includes(this.assignedFilter.toLowerCase()));
+
+      const statusMatch =
+        this.selectedStatuses.length === 0 ||
+        this.selectedStatuses.includes(t.status);
+
+      const priorityMatch =
+        this.selectedPriorities.length === 0 ||
+        this.selectedPriorities.includes(t.priority);
+
+      const assigneeMatch =
+        this.selectedAssignees.length === 0 ||
+        this.selectedAssignees.includes(t.assigned);
+
+      return statusMatch && priorityMatch && assigneeMatch;
     });
   }
 
+  /* ================= VIEW ================= */
+
   viewTask(task: any) {
-    console.log('Clicked Task:', task);
     this.selectedTask = task;
   }
 
@@ -87,13 +154,17 @@ export class TasksComponent implements OnInit {
     this.editingTask = null; 
   }
 
+  /* ================= CREATE ================= */
+
   createTask() {
     if (!this.newTask.title.trim()) {
       alert('Title is required');
       return;
     }
+
     if (isPlatformBrowser(this.platformId)) {
       const project = this.projects.find((p: any) => p.id == this.newTask.projectId);
+
       if (project) {
         const task = {
           id: Date.now(),
@@ -104,9 +175,16 @@ export class TasksComponent implements OnInit {
           dueDate: this.newTask.dueDate,
           priority: this.newTask.priority
         };
+
         project.tasks.push(task);
         this.taskService.saveProjects(this.projects);
-        this.newTask = { title: '', description: '', status: 'To Do', assigned: '', dueDate: '', priority: 'low', projectId: null };
+
+        this.newTask = { 
+          title: '', description: '', status: 'To Do',
+          assigned: '', dueDate: '', priority: 'low',
+          projectId: null 
+        };
+
         this.showCreateTaskForm = false;
         this.notificationService.addNotification('Task "' + task.title + '" created successfully');
       } else {
@@ -114,6 +192,8 @@ export class TasksComponent implements OnInit {
       }
     }
   }
+
+  /* ================= EDIT ================= */
 
   updateTask(task: any) {
     this.editingTask = task;
@@ -126,33 +206,46 @@ export class TasksComponent implements OnInit {
       alert('Title is required');
       return;
     }
+
     if (isPlatformBrowser(this.platformId)) {
       const project = this.projects.find((p: any) => p.id === this.editingTask.projectId);
+
       if (project) {
         const tIndex = project.tasks.findIndex((t: any) => t.id === this.editingTask.id);
+
         if (tIndex !== -1) {
           project.tasks[tIndex] = { ...this.editTaskForm };
           this.taskService.saveProjects(this.projects);
-          this.notificationService.addNotification('Task "' + this.editTaskForm.title + '" updated successfully');
+
+          this.notificationService.addNotification(
+            'Task "' + this.editTaskForm.title + '" updated successfully'
+          );
+
           this.cancelEdit();
         }
       }
     }
   }
 
-
   cancelEdit() {
     this.editingTask = null;
     this.editTaskForm = {};
   }
 
+  /* ================= DELETE ================= */
+
   deleteTask(task: any) {
     if (confirm('Delete task?')) {
       const project = this.projects.find(p => p.id === task.projectId);
+
       if (project) {
-        project.tasks = project.tasks.filter((t: any) => t.id !== task.id);
+        project.tasks =
+          project.tasks.filter((t: any) => t.id !== task.id);
+
         this.taskService.saveProjects(this.projects);
-        this.notificationService.addNotification(`Task "${task.title}" deleted`);
+        this.notificationService.addNotification(
+          `Task "${task.title}" deleted`
+        );
       }
     }
   }

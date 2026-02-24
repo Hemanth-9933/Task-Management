@@ -103,24 +103,62 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
-    if (priorityCanvas) {
-      const low = this.tasks.filter(t => t.priority === 'low').length;
-      const medium = this.tasks.filter(t => t.priority === 'medium').length;
-      const high = this.tasks.filter(t => t.priority === 'high').length;
-      const urgent = this.tasks.filter(t => t.priority === 'urgent').length;
-
-      this.priorityChart = new Chart(priorityCanvas, {
-        type: 'bar',
-        data: {
-          labels: ['Low', 'Medium', 'High', 'Urgent'],
-          datasets: [{
-            label: 'Count',
-            data: [low, medium, high, urgent],
-            backgroundColor: ['lightgreen', '	#FFBF00', '	#FF5F1F', 'red']
-          }]
+if (priorityCanvas) {
+ 
+  const low = this.tasks.filter(t => t.priority === 'low').length;
+  const medium = this.tasks.filter(t => t.priority === 'medium').length;
+  const high = this.tasks.filter(t => t.priority === 'high').length;
+  const urgent = this.tasks.filter(t => t.priority === 'urgent').length;
+ 
+  this.priorityChart = new Chart(priorityCanvas, {
+    type: 'bar',
+    data: {
+      labels: ['Low', 'Medium', 'High', 'Urgent'],
+      datasets: [{
+        label: 'Tasks',
+        data: [low, medium, high, urgent],
+        backgroundColor: [
+          '#4CAF50',
+          '#FFC107',
+          '#FF7043',
+          '#F44336'
+        ],
+        borderRadius: 8,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 14,
+              // weight: '500'
+            }
+          }
         },
-        options: { responsive: true }
-      });
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#eee'
+          },
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
     }
-  }
+  });
+}
+}
 }

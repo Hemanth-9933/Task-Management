@@ -3,21 +3,41 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../services/task.service';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-projects-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './projects-details.html',
-  styleUrl: './projects-details.scss'
+  styleUrls: ['./projects-details.scss']
 })
 export class ProjectsDetailsComponent implements OnInit {
+
   project: any;
-  isCreateTaskMode = false; 
   progressPercentage = 0;
 
+  viewMode: 'list' | 'board' = 'list';
+  
+
+  currentPage:
+    | 'main'
+    | 'list'
+    | 'board'
+    | 'createTask'
+    | 'editTask'
+    | 'editProject'
+    = 'main';
+
+  selectedTask: any = null;
+
   newTask: any = {
-    title: '', status: 'To Do', priority: 'Medium', description: '', assignee: '', dueDate: ''
+    title: '',
+    status: 'To Do',
+    priority: 'Medium',
+    assignee: '',
+    dueDate: '',
+    description: ''
   };
 
   constructor(
@@ -28,68 +48,109 @@ export class ProjectsDetailsComponent implements OnInit {
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+
     this.taskService.projects$.subscribe(projects => {
       this.project = projects.find((p: any) => p.id === id);
+
       if (this.project) {
-        if (!this.project.tasks) this.project.tasks = [];
+        if (!this.project.tasks) {
+          this.project.tasks = [];
+        }
         this.calculateProgress();
       }
     });
   }
 
-  openCreateTask() {
-    this.resetForm();
-    this.isCreateTaskMode = true; 
+
+  setView(mode: 'list' | 'board') {
+    this.viewMode = mode;
   }
 
-  saveCreatedTask() {
-    if (!this.newTask.title || !this.newTask.assignee) {
-      alert('Please fill in required fields');
-      return;
-    }
 
-    const task = { 
-      ...this.newTask, 
-      id: Date.now() 
-    };
+  drop(event: CdkDragDrop<any>, newStatus: string) {
+    const task = event.item.data;
+    task.status = newStatus;
 
-    this.project.tasks.push(task);
-    
     this.taskService.updateProject(this.project);
-    
-    this.isCreateTaskMode = false; 
     this.calculateProgress();
   }
 
-  resetForm() {
-    this.newTask = { title: '', status: 'To Do', priority: 'Medium', description: '', assignee: '', dueDate: '' };
+
+  showMain() {
+    this.currentPage = 'main';
+  }
+
+  openCreateTask() {
+    this.resetTaskForm();
+    this.currentPage = 'createTask';
+  }
+
+  openEditProject() {
+    this.currentPage = 'editProject';
+  }
+
+  saveTask() {
+    if (!this.project.tasks) {
+      this.project.tasks = [];
+    }
+
+    const taskToAdd = {
+      ...this.newTask,
+      id: Date.now()
+    };
+
+    this.project.tasks.push(taskToAdd);
+
+    this.taskService.updateProject(this.project);
+    this.calculateProgress();
+    this.showMain();
+  }
+
+  resetTaskForm() {
+    this.newTask = {
+      title: '',
+      status: 'To Do',
+      priority: 'Medium',
+      assignee: '',
+      dueDate: '',
+      description: ''
+    };
+  }
+
+  saveProject() {
+    this.taskService.updateProject(this.project);
+        this.showMain();
   }
 
   calculateProgress() {
-    if (!this.project?.tasks?.length) { this.progressPercentage = 0; return; }
-    const done = this.project.tasks.filter((t: any) => t.status === 'Completed').length;
-    this.progressPercentage = (done / this.project.tasks.length) * 100;
+    if (!this.project?.tasks?.length) {
+      this.progressPercentage = 0;
+      return;
+    }
+  
+
+    const done = this.project.tasks.filter(
+      (t: any) => t.status === 'Completed'
+    ).length;
+
+    this.progressPercentage =
+      (done / this.project.tasks.length) * 100;
   }
 
-  get toDo() { return this.project?.tasks?.filter((t: any) => t.status === 'To Do').length || 0; }
-  get inProgress() { return this.project?.tasks?.filter((t: any) => t.status === 'In Progress').length || 0; }
-  get completed() { return this.project?.tasks?.filter((t: any) => t.status === 'Completed').length || 0; }
-  get overdue() {
-    return this.project?.tasks?.filter((t: any) => 
-      t.status !== 'Completed' && new Date(t.dueDate) < new Date()
-    ).length || 0;
+  get completedTasks() {
+    return this.project?.tasks?.filter((t: any) => t.status === 'Completed') || [];
   }
 
-  get totalDaysOfProject() {
-    const start = new Date(this.project.start);
-    const end = new Date(this.project.end);
-    return Math.ceil(Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) || 0;
+  get todoTasks() {
+    return this.project?.tasks?.filter((t: any) => t.status === 'To Do') || [];
   }
 
-  get currentDayOfProject() {
-    const start = new Date(this.project.start);
-    const day = Math.ceil((new Date().getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.max(0, Math.min(day, this.totalDaysOfProject));
+  get inProgressTasks() {
+    return this.project?.tasks?.filter((t: any) => t.status === 'In Progress') || [];
+  }
+
+  get overdueTasks() {
+    return this.project?.tasks?.filter((t: any) => t.status === 'Overdue') || [];
   }
 
   deleteProject() {
@@ -98,9 +159,4 @@ export class ProjectsDetailsComponent implements OnInit {
       this.router.navigate(['/projects']);
     }
   }
-
-  editProject() { 
-
-    
-   }
 }

@@ -1,55 +1,119 @@
-<div class="board-container">
-  <div class="board-header">
-    <h2>Task Board</h2>
+<div class="board-wrapper">
 
-    <div class="filters">
-      <button (click)="showFilters = !showFilters" class="filter-btn">
-        <img src="/icons/filters.png" alt="filter-btn"> Filter
-      </button>
-      <div *ngIf="showFilters" class="filter-options">
-        <button class="close-btn" (click)="showFilters = false">✕</button>
-        <button (click)="setFilter('')">All Priorities</button>
-        <button (click)="setFilter('low')">Low</button>
-        <button (click)="setFilter('medium')">Medium</button>
-        <button (click)="setFilter('high')">High</button>
-        <button (click)="setFilter('urgent')">Urgent</button>
+  <div class="top-section">
+    <h1>All Boards</h1>
+
+    <div class="right-actions">
+      <div class="filter-container">
+        <button class="filter-btn" (click)="showFilters = !showFilters">
+          <img src="/icons/filters.png" alt="filter"> Filters
+        </button>
+
+        <div *ngIf="showFilters" class="filter-dropdown">
+          <button class="close" (click)="showFilters = false">✕</button>
+          <button (click)="setFilter('')">All</button>
+          <button (click)="setFilter('low')">Low</button>
+          <button (click)="setFilter('medium')">Medium</button>
+          <button (click)="setFilter('high')">High</button>
+          <button (click)="setFilter('urgent')">Urgent</button>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="board" cdkDropListGroup>
-    <div class="column" id="todo" cdkDropList [cdkDropListData]="todoTasks" (cdkDropListDropped)="onDrop($event)">
-      <h3>To Do</h3>
-      <div class="task-card" *ngFor="let task of todoTasks" cdkDrag [style.background]="getCardColor(task.priority)">
-        <h4>{{ task.title }}</h4>
-        <p>{{ task.description }}</p>
-        <p>Priority: {{ task.priority }}</p>
-        <p>Assigned: {{ task.assigned }}</p>
-        <p>Due: {{ task.dueDate }}</p>
-        <p>Project: {{ task.projectTitle }}</p>
+
+    <div class="column todo"
+         id="todo"
+         cdkDropList
+         [cdkDropListData]="todoTasks"
+         (cdkDropListDropped)="onDrop($event)">
+
+      <div class="column-header">
+        <h3>To Do</h3>
+        <span class="count">{{ todoTasks.length }}</span>
+      </div>
+
+      <div class="task-card"
+           *ngFor="let task of todoTasks"
+           cdkDrag
+           [style.background]="getCardColor(task.priority)">
+
+        <div class="task-title">{{ task.title }}</div>
+
+        <div class="task-project">{{ task.projectTitle }}</div>
+
+        <div class="task-footer">
+          <span class="priority" [ngClass]="task.priority">
+            {{ task.priority }}
+          </span>
+
+          <span class="due">{{ task.dueDate }}</span>
+        </div>
       </div>
     </div>
-    <div class="column" id="inprogress" cdkDropList [cdkDropListData]="inProgressTasks" (cdkDropListDropped)="onDrop($event)">
-      <h3>In Progress</h3>
-      <div class="task-card" *ngFor="let task of inProgressTasks" cdkDrag [style.background]="getCardColor(task.priority)">
-        <h4>{{ task.title }}</h4>
-        <p>{{ task.description }}</p>
-        <p>Priority: {{ task.priority }}</p>
-        <p>Assigned: {{ task.assigned }}</p>
-        <p>Due: {{ task.dueDate }}</p>
-        <p>Project: {{ task.projectTitle }}</p>
+
+
+    <div class="column progress"
+         id="inprogress"
+         cdkDropList
+         [cdkDropListData]="inProgressTasks"
+         (cdkDropListDropped)="onDrop($event)">
+
+      <div class="column-header">
+        <h3>In Progress</h3>
+        <span class="count">{{ inProgressTasks.length }}</span>
+      </div>
+
+      <div class="task-card"
+           *ngFor="let task of inProgressTasks"
+           cdkDrag
+           [style.background]="getCardColor(task.priority)">
+
+        <div class="task-title">{{ task.title }}</div>
+
+        <div class="task-project">{{ task.projectTitle }}</div>
+
+        <div class="task-footer">
+          <span class="priority" [ngClass]="task.priority">
+            {{ task.priority }}
+          </span>
+
+          <span class="due">{{ task.dueDate }}</span>
+        </div>
       </div>
     </div>
-    <div class="column" id="done" cdkDropList [cdkDropListData]="doneTasks" (cdkDropListDropped)="onDrop($event)">
-      <h3>Done</h3>
-      <div class="task-card" *ngFor="let task of doneTasks" cdkDrag [style.background]="getCardColor(task.priority)">
-        <h4>{{ task.title }}</h4>
-        <p>{{ task.description }}</p>
-        <p>Priority: {{ task.priority }}</p>
-        <p>Assigned: {{ task.assigned }}</p>
-        <p>Due: {{ task.dueDate }}</p>
-        <p>Project: {{ task.projectTitle }}</p>
+
+
+    <div class="column done"
+         id="done"
+         cdkDropList
+         [cdkDropListData]="doneTasks"
+         (cdkDropListDropped)="onDrop($event)">
+
+      <div class="column-header">
+        <h3>Completed</h3>
+        <span class="count">{{ doneTasks.length }}</span>
+      </div>
+
+      <div class="task-card"
+           *ngFor="let task of doneTasks"
+           cdkDrag
+           [style.background]="getCardColor(task.priority)">
+
+        <div class="task-title">{{ task.title }}</div>
+
+        <div class="task-project">{{ task.projectTitle }}</div>
+
+        <div class="task-footer">
+          <span class="priority" [ngClass]="task.priority">
+            {{ task.priority }}
+          </span>
+
+          <span class="due">{{ task.dueDate }}</span>
+        </div>
       </div>
     </div>
+
   </div>
 </div>

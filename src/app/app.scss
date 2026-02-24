@@ -1,0 +1,22 @@
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-btn-wrapper {
+  align-self: flex-end;
+  margin-bottom: 10px;
+}
+
+.edit-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+}
