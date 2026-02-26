@@ -1,24 +1,96 @@
 <div class="board-wrapper">
 
+  <!-- ================= HEADER ================= -->
+
   <div class="top-section">
     <h1>All Boards</h1>
 
     <div class="right-actions">
-      <div class="filter-container">
-        <button class="filter-btn" (click)="showFilters = !showFilters">
-          <img src="/icons/filters.png" alt="filter"> Filters
-        </button>
-
-        <div *ngIf="showFilters" class="filter-dropdown">
-          <button class="close" (click)="showFilters = false">✕</button>
-          <button (click)="setFilter('')">All</button>
-          <button (click)="setFilter('low')">Low</button>
-          <button (click)="setFilter('medium')">Medium</button>
-          <button (click)="setFilter('high')">High</button>
-          <button (click)="setFilter('urgent')">Urgent</button>
-        </div>
-      </div>
+      <button class="filter-btn" (click)="showFilters = true">
+        <img src="/icons/filters.png" alt="filter">
+        Filters
+      </button>
     </div>
+  </div>
+
+
+  <!-- ================= OVERLAY ================= -->
+
+  <div class="filter-overlay"
+       *ngIf="showFilters"
+       (click)="showFilters = false">
+  </div>
+
+
+  <!-- ================= RIGHT SIDE FILTER PANEL ================= -->
+
+  <div class="filter-panel" *ngIf="showFilters">
+
+    <div class="filter-header">
+      <h3>Filters</h3>
+      <span class="close" (click)="showFilters = false">✕</span>
+    </div>
+
+
+    <!-- STATUS (UI Only – matches screenshot) -->
+    <div class="filter-card">
+      <h4>Status</h4>
+
+      <label><input type="checkbox"> To Do</label>
+      <label><input type="checkbox"> In Progress</label>
+      <label><input type="checkbox"> Done</label>
+      <label><input type="checkbox"> On Hold</label>
+    </div>
+
+
+    <!-- PRIORITY (WORKING DYNAMIC FILTER) -->
+    <div class="filter-card">
+      <h4>Priority</h4>
+
+      <label>
+        <input type="checkbox"
+               (change)="setFilter('low')"
+               [checked]="filterPriority === 'low'">
+        Low
+      </label>
+
+      <label>
+        <input type="checkbox"
+               (change)="setFilter('medium')"
+               [checked]="filterPriority === 'medium'">
+        Medium
+      </label>
+
+      <label>
+        <input type="checkbox"
+               (change)="setFilter('high')"
+               [checked]="filterPriority === 'high'">
+        High
+      </label>
+
+      <label>
+        <input type="checkbox"
+               (change)="setFilter('urgent')"
+               [checked]="filterPriority === 'urgent'">
+        Urgent
+      </label>
+    </div>
+
+
+    <div class="filter-card">
+      <h4>Assignee</h4>
+
+      <label><input type="checkbox"> Hemanth</label>
+      <label><input type="checkbox"> Vinoth</label>
+      <label><input type="checkbox"> Dinesh</label>
+      <label><input type="checkbox"> Shivam</label>
+    </div>
+
+
+    <button class="clear-btn" (click)="setFilter('')">
+      Clear All Filters
+    </button>
+
   </div>
 
   <div class="board" cdkDropListGroup>
@@ -36,18 +108,15 @@
 
       <div class="task-card"
            *ngFor="let task of todoTasks"
-           cdkDrag
-           [style.background]="getCardColor(task.priority)">
+           cdkDrag>
 
         <div class="task-title">{{ task.title }}</div>
-
         <div class="task-project">{{ task.projectTitle }}</div>
 
         <div class="task-footer">
           <span class="priority" [ngClass]="task.priority">
             {{ task.priority }}
           </span>
-
           <span class="due">{{ task.dueDate }}</span>
         </div>
       </div>
@@ -67,18 +136,15 @@
 
       <div class="task-card"
            *ngFor="let task of inProgressTasks"
-           cdkDrag
-           [style.background]="getCardColor(task.priority)">
+           cdkDrag>
 
         <div class="task-title">{{ task.title }}</div>
-
         <div class="task-project">{{ task.projectTitle }}</div>
 
         <div class="task-footer">
           <span class="priority" [ngClass]="task.priority">
             {{ task.priority }}
           </span>
-
           <span class="due">{{ task.dueDate }}</span>
         </div>
       </div>
@@ -98,18 +164,15 @@
 
       <div class="task-card"
            *ngFor="let task of doneTasks"
-           cdkDrag
-           [style.background]="getCardColor(task.priority)">
+           cdkDrag>
 
         <div class="task-title">{{ task.title }}</div>
-
         <div class="task-project">{{ task.projectTitle }}</div>
 
         <div class="task-footer">
           <span class="priority" [ngClass]="task.priority">
             {{ task.priority }}
           </span>
-
           <span class="due">{{ task.dueDate }}</span>
         </div>
       </div>

@@ -1,7 +1,6 @@
 <div class="project-container" *ngIf="project">
 
   <div *ngIf="currentPage === 'createTask'" class="form-page">
-
     <div class="page-header">
       <h2>Create Task</h2>
     </div>
@@ -27,7 +26,6 @@
         <div class="form-group">
           <label>Priority *</label>
           <select [(ngModel)]="newTask.priority">
-
             <option>Low</option>
             <option>Medium</option>
             <option>High</option>
@@ -47,7 +45,7 @@
 
         <div class="form-group full">
           <label>Description</label>
-          <textarea [(ngModel)]="newTask.description" required></textarea>
+          <textarea [(ngModel)]="newTask.description"></textarea>
         </div>
 
       </div>
@@ -60,7 +58,6 @@
   </div>
 
   <div *ngIf="currentPage === 'editProject'" class="form-page">
-
     <div class="page-header">
       <h2>Edit Project</h2>
     </div>
@@ -107,132 +104,138 @@
     </div>
   </div>
 
-  <div *ngIf="currentPage === 'main'">
+<div *ngIf="currentPage === 'main'">
 
-    <div class="project-header">
+  <div class="breadcrumb">
+    Projects / {{ project.title }}
+  </div>
 
-      <div class="header-left">
+  <div class="project-header">
 
-        <div class="edit-btn-wrapper">
-          <button class="btn outline edit-btn"
-                  (click)="openEditProject()">
-            ✏ Edit Project
-          </button>
+    <div class="header-left">
+
+      <h1 class="project-title">
+        {{ project.title }}
+        <span class="status-badge"
+              [ngClass]="project.status?.replace(' ','').toLowerCase()">
+          {{ project.status }}
+        </span>
+      </h1>
+
+      <p class="project-description">
+        {{ project.desc }}
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          📅 <strong>Project Timeline</strong><br>
+          {{ project.startDate }} - {{ project.endDate }}
         </div>
-
-        <h1 class="project-title">
-          {{ project.title }}
-          <span class="status-badge"
-                [ngClass]="project.status?.replace(' ','').toLowerCase()">
-            {{ project.status }}
-          </span>
-        </h1>
-
-        <p class="project-description">
-          {{ project.desc }}
-        </p>
-
-        <div class="project-info">
-
-          <div class="info-item">
-            <img src="/icons/progress.png" />
-            <div>
-              <small>Project Timeline</small>
-              <div>{{ project.timeline }}</div>
-            </div>
-          </div>
-
-          <div class="info-item">
-            <img src="/icons/createdby.png" />
-            <div>
-              <small>Created By</small>
-              <div>{{ project.createdBy }}</div>
-            </div>
-          </div>
-
-          <div class="info-item">
-            <img src="/icons/created.png" />
-            <div>
-              <small>Created</small>
-              <div>{{ project.createdOn }}</div>
-            </div>
-          </div>
-
-        </div>
-
       </div>
 
-      <div class="actions">
-        <button class="btn green" (click)="openCreateTask()">
-          Create New Task
-        </button>
+      <div class="progress-section">
+        <div class="progress-label">
+          📈 <strong>Progress</strong>
+        </div>
 
-        <button class="btn red" (click)="deleteProject()">
-          Delete Project
-        </button>
+        <div class="progress-bar">
+          <div class="progress-fill"
+               [style.width.%]="getProgressPercentage()">
+          </div>
+        </div>
+
+        <div class="progress-text">
+          {{ getCompletedCount() }} of {{ project.tasks?.length || 0 }}
+          ({{ getProgressPercentage() }}%)
+        </div>
       </div>
 
     </div>
 
-    <div class="progress-section">
-      <div class="progress-top">
-        <span>Progress</span>
-        <span>{{ progressPercentage | number:'1.0-0' }}%</span>
-      </div>
+    <div class="actions">
+      <button class="btn green" (click)="openCreateTask()">
+        Create New Task
+      </button>
 
-      <div class="progress-bar">
-        <div class="progress-fill"
-             [style.width.%]="progressPercentage">
-        </div>
-      </div>
+      <button class="btn outline" (click)="openEditProject()">
+        ✏️ Edit Project
+      </button>
+
+      <button class="btn red" (click)="deleteProject()">
+        🗑 Delete Project
+      </button>
     </div>
 
-    <div class="status-cards">
-      <div class="card todo">
-        <h4>To Do</h4>
-        <h2>{{ todoTasks.length }}</h2>
-      </div>
+  </div>
 
-      <div class="card progress">
-        <h4>In Progress</h4>
-        <h2>{{ inProgressTasks.length }}</h2>
-      </div>
+  <div class="stats-cards">
 
-      <div class="card completed">
-        <h4>Completed</h4>
-        <h2>{{ completedTasks.length }}</h2>
-      </div>
-
-      <div class="card overdue">
-        <h4>Overdue</h4>
-        <h2>{{ overdueTasks.length }}</h2>
-      </div>
+    <div class="stat-card todo">
+      <p>To Do</p>
+      <h2>{{ getStatusCount('To Do') }}</h2>
     </div>
+
+    <div class="stat-card progress">
+      <p>In Progress</p>
+      <h2>{{ getStatusCount('In Progress') }}</h2>
+    </div>
+
+    <div class="stat-card completed">
+      <p>Completed</p>
+      <h2>{{ getStatusCount('Completed') }}</h2>
+    </div>
+
+    <div class="stat-card overdue">
+      <p>Overdue</p>
+      <h2>{{ getStatusCount('Overdue') }}</h2>
+    </div>
+
+  </div>
 
   <div class="tasks-wrapper">
 
-  <div class="tasks-header">
-    <h3>Tasks</h3>
+    <div class="tasks-header">
+      <h3>Tasks</h3>
 
-    <div class="view-toggle">
-      <button class="toggle-btn"
-              [class.active]="viewMode === 'list'"
-              (click)="setView('list')">
-        List
-      </button>
-
-      <button class="toggle-btn"
-              [class.active]="viewMode === 'board'"
-              (click)="setView('board')">
-        Board
-      </button>
+      <div class="view-toggle">
+        <button class="toggle-btn" (click)="goToList()">List</button>
+        <button class="toggle-btn" (click)="goToBoard()">Board</button>
+      </div>
     </div>
+
+    <div class="task-preview"
+         *ngFor="let task of project.tasks">
+
+      <div class="task-left">
+        <h4>{{ task.title }}</h4>
+        <p>
+          {{ task.dueDate }} • Assigned to: {{ task.assignee }}
+        </p>
+      </div>
+
+      <div class="task-right">
+        <span class="badge"
+              [ngClass]="task.status.replace(' ','').toLowerCase()">
+          {{ task.status }}
+        </span>
+
+        <span class="badge"
+              [ngClass]="task.priority.toLowerCase()">
+          {{ task.priority }}
+        </span>
+      </div>
+
+    </div>
+
   </div>
 
-  <div *ngIf="viewMode === 'list'">
+</div>
+  <div *ngIf="currentPage === 'list'" class="separate-page">
+
+    <h2>Task List</h2>
+    <button class="btn outline" (click)="showMain()">Back</button>
 
     <div class="task-table">
-
       <div class="table-header">
         <div>Title</div>
         <div>Status</div>
@@ -264,102 +267,91 @@
         <div>{{ task.dueDate }}</div>
 
       </div>
-
     </div>
 
-  </div>
-
-  <div *ngIf="viewMode === 'board'" class="board-view">
-
-    <div class="board-column"
-         cdkDropList
-         (cdkDropListDropped)="drop($event, 'To Do')">
-
-      <h4>To Do ({{ todoTasks.length }})</h4>
-
-      <div class="board-card"
-           *ngFor="let task of todoTasks"
-           cdkDrag
-           [cdkDragData]="task">
-
-        <h5>{{ task.title }}</h5>
-        <p>{{ task.assignee }}</p>
-
-        <span class="badge"
-              [ngClass]="task.priority.toLowerCase()">
-          {{ task.priority }}
-        </span>
-
-      </div>
-    </div>
-
-    <div class="board-column"
-         cdkDropList
-         (cdkDropListDropped)="drop($event, 'In Progress')">
-
-      <h4>In Progress ({{ inProgressTasks.length }})</h4>
-
-      <div class="board-card"
-           *ngFor="let task of inProgressTasks"
-           cdkDrag
-           [cdkDragData]="task">
-
-        <h5>{{ task.title }}</h5>
-        <p>{{ task.assignee }}</p>
-
-        <span class="badge"
-              [ngClass]="task.priority.toLowerCase()">
-          {{ task.priority }}
-        </span>
-
-      </div>
-    </div>
-
-    <div class="board-column"
-         cdkDropList
-         (cdkDropListDropped)="drop($event, 'Completed')">
-
-      <h4>Completed ({{ completedTasks.length }})</h4>
-
-      <div class="board-card"
-           *ngFor="let task of completedTasks"
-           cdkDrag
-           [cdkDragData]="task">
-
-        <h5>{{ task.title }}</h5>
-        <p>{{ task.assignee }}</p>
-
-        <span class="badge"
-              [ngClass]="task.priority.toLowerCase()">
-          {{ task.priority }}
-        </span>
-
-      </div>
-    </div>
-
-  </div>
-
-
-
-      <ng-template #noTasks>
-        <div class="empty-state">
-          No tasks available.
-        </div>
-      </ng-template>
-
-    </div>
-
-  </div>
-
-  
-  <div *ngIf="currentPage === 'list'" class="separate-page">
-    <h2>Task List</h2>
-    <button class="btn outline" (click)="showMain()">Back</button>
   </div>
 
   <div *ngIf="currentPage === 'board'" class="separate-page">
+
     <h2>Task Board</h2>
     <button class="btn outline" (click)="showMain()">Back</button>
+
+    <div class="board-view">
+
+      <div class="board-column"
+           cdkDropList
+           id="todoList"
+           [cdkDropListData]="todoTasks"
+           [cdkDropListConnectedTo]="['progressList','completedList']"
+           (cdkDropListDropped)="drop($event,'To Do')">
+
+        <h4>To Do ({{ todoTasks.length }})</h4>
+
+        <div class="board-card"
+             *ngFor="let task of todoTasks"
+             cdkDrag
+             [cdkDragData]="task">
+
+          <h5>{{ task.title }}</h5>
+          <p>{{ task.assignee }}</p>
+
+          <span class="badge"
+                [ngClass]="task.priority.toLowerCase()">
+            {{ task.priority }}
+          </span>
+        </div>
+      </div>
+
+      <div class="board-column"
+           cdkDropList
+           id="progressList"
+           [cdkDropListData]="inProgressTasks"
+           [cdkDropListConnectedTo]="['todoList','completedList']"
+           (cdkDropListDropped)="drop($event,'In Progress')">
+
+        <h4>In Progress ({{ inProgressTasks.length }})</h4>
+
+        <div class="board-card"
+             *ngFor="let task of inProgressTasks"
+             cdkDrag
+             [cdkDragData]="task">
+
+          <h5>{{ task.title }}</h5>
+          <p>{{ task.assignee }}</p>
+
+          <span class="badge"
+                [ngClass]="task.priority.toLowerCase()">
+            {{ task.priority }}
+          </span>
+        </div>
+      </div>
+
+      <div class="board-column"
+           cdkDropList
+           id="completedList"
+           [cdkDropListData]="completedTasks"
+           [cdkDropListConnectedTo]="['todoList','progressList']"
+           (cdkDropListDropped)="drop($event,'Completed')">
+
+        <h4>Completed ({{ completedTasks.length }})</h4>
+
+        <div class="board-card"
+             *ngFor="let task of completedTasks"
+             cdkDrag
+             [cdkDragData]="task">
+
+          <h5>{{ task.title }}</h5>
+          <p>{{ task.assignee }}</p>
+
+          <span class="badge"
+                [ngClass]="task.priority.toLowerCase()">
+            {{ task.priority }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
 </div>

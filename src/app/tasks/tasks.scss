@@ -223,7 +223,6 @@ tbody tr:hover {
   border-radius: 10px;
   margin-top: 10px;
 }
-/* ================= FILTER PANEL ================= */
 
 .filter-overlay {
   position: fixed;
@@ -264,7 +263,6 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-/* FILTER CARD */
 .filter-card {
   background: white;
   padding: 16px;
@@ -306,5 +304,88 @@ tbody tr:hover {
   background: none;
   border: none;
   font-weight: 500;
+  cursor: pointer;
+}
+
+.create-page {
+  padding: 40px;
+}
+
+.create-header h1 {
+  font-size: 42px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.create-header p {
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.create-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 22px;
+}
+
+.field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.field.full {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.field textarea {
+  height: 100px;
+  resize: none;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.main-btn {
+  background: #8d9b6a;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 30px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  background: #e6e6e6;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 20px;
   cursor: pointer;
 }

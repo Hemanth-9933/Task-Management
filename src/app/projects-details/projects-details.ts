@@ -13,23 +13,12 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./projects-details.scss']
 })
 export class ProjectsDetailsComponent implements OnInit {
-
-  project: any;
+currentPage: 'main' | 'list' | 'board' | 'createTask' | 'editProject' = 'main';  project: any;
   progressPercentage = 0;
 
-  viewMode: 'list' | 'board' = 'list';
-  
+viewMode: 'list' | 'board' = 'list';
 
-  currentPage:
-    | 'main'
-    | 'list'
-    | 'board'
-    | 'createTask'
-    | 'editTask'
-    | 'editProject'
-    = 'main';
-
-  selectedTask: any = null;
+   selectedTask: any = null;
 
   newTask: any = {
     title: '',
@@ -46,20 +35,22 @@ export class ProjectsDetailsComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-
-    this.taskService.projects$.subscribe(projects => {
-      this.project = projects.find((p: any) => p.id === id);
-
-      if (this.project) {
-        if (!this.project.tasks) {
-          this.project.tasks = [];
-        }
-        this.calculateProgress();
+ ngOnInit() {
+  this.currentPage = 'main';
+ 
+  const id = Number(this.route.snapshot.paramMap.get('id'));
+ 
+  this.taskService.projects$.subscribe(projects => {
+    this.project = projects.find((p: any) => p.id === id);
+ 
+    if (this.project) {
+      if (!this.project.tasks) {
+        this.project.tasks = [];
       }
-    });
-  }
+      this.calculateProgress();
+    }
+  });
+}
 
 
   setView(mode: 'list' | 'board') {
@@ -88,6 +79,15 @@ export class ProjectsDetailsComponent implements OnInit {
   openEditProject() {
     this.currentPage = 'editProject';
   }
+  goToList() {
+  this.currentPage = 'list';
+}
+
+goToBoard() {
+  this.currentPage = 'board';
+}
+
+
 
   saveTask() {
     if (!this.project.tasks) {
@@ -152,6 +152,19 @@ export class ProjectsDetailsComponent implements OnInit {
   get overdueTasks() {
     return this.project?.tasks?.filter((t: any) => t.status === 'Overdue') || [];
   }
+  getCompletedCount() {
+  return this.project.tasks?.filter((t: any) => t.status === 'Completed').length || 0;
+}
+
+getStatusCount(status: string) {
+  return this.project.tasks?.filter((t:any) => t.status === status).length || 0;
+}
+
+getProgressPercentage() {
+  const total = this.project.tasks?.length || 0;
+  const completed = this.getCompletedCount();
+  return total === 0 ? 0 : Math.round((completed / total) * 100);
+}
 
   deleteProject() {
     if (confirm('Delete project?')) {

@@ -18,12 +18,10 @@ export class TasksComponent implements OnInit {
   tasks: any[] = [];
   filteredTasks: any[] = [];
 
-  /* OLD FILTERS (kept for compatibility) */
   statusFilter = '';
   priorityFilter = '';
   assignedFilter = '';
 
-  /* NEW MULTI FILTER ARRAYS */
   selectedStatuses: string[] = [];
   selectedPriorities: string[] = [];
   selectedAssignees: string[] = [];
@@ -72,7 +70,6 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  /* ================= FILTER LOGIC ================= */
 
   onStatusChange(event: any) {
     const value = event.target.value;
@@ -139,7 +136,6 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  /* ================= VIEW ================= */
 
   viewTask(task: any) {
     this.selectedTask = task;
@@ -154,7 +150,6 @@ export class TasksComponent implements OnInit {
     this.editingTask = null; 
   }
 
-  /* ================= CREATE ================= */
 
   createTask() {
     if (!this.newTask.title.trim()) {
@@ -193,7 +188,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  /* ================= EDIT ================= */
 
   updateTask(task: any) {
     this.editingTask = task;
@@ -232,7 +226,6 @@ export class TasksComponent implements OnInit {
     this.editTaskForm = {};
   }
 
-  /* ================= DELETE ================= */
 
   deleteTask(task: any) {
     if (confirm('Delete task?')) {
