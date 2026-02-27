@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './register.scss'
 })
 export class RegisterComponent implements OnInit {
+
   username = '';
   email = '';
   password = '';
@@ -19,9 +20,6 @@ export class RegisterComponent implements OnInit {
   error = '';
 
   constructor(private router: Router, private authService: AuthService) {}
-  
-
-  
 
   ngOnInit() {
     if (this.authService.currentUserValue) {
@@ -29,9 +27,13 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  register() {
+  register(form: NgForm) {
+
+    if (form.invalid) {
+      return;
+    }
+
     if (this.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match';
       return;
     }
 
@@ -47,5 +49,5 @@ export class RegisterComponent implements OnInit {
   cancel() {
     this.router.navigate(['/login']);
   }
-  
+
 }

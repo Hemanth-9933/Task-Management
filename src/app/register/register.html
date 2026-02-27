@@ -6,51 +6,92 @@
     <p class="subtitle">
       Register for an account to access the task management application
     </p>
-      <h3 class="error" *ngIf="error">{{ error }}</h3>
 
-    <form (ngSubmit)="register()">
+    <h3 class="error" *ngIf="error">{{ error }}</h3>
+
+    <form #form="ngForm" (ngSubmit)="register(form)">
+
       <label>Full Name</label>
       <input
         type="text"
         name="username"
         [(ngModel)]="username"
+        #usernameRef="ngModel"
         placeholder="Enter your full name"
         required
+        [class.invalid]="usernameRef.invalid && usernameRef.touched"
       />
+      <div class="validation"
+           *ngIf="usernameRef.invalid && usernameRef.touched">
+        Please enter your name.
+      </div>
 
       <label>Email</label>
       <input
         type="email"
         name="email"
         [(ngModel)]="email"
+        #emailRef="ngModel"
         placeholder="Enter your email"
         required
+        email
+        [class.invalid]="emailRef.invalid && emailRef.touched"
       />
+      <div class="validation"
+           *ngIf="emailRef.invalid && emailRef.touched">
+        Email is required.
+      </div>
 
       <label>Password</label>
       <input
         type="password"
         name="password"
         [(ngModel)]="password"
+        #passwordRef="ngModel"
         placeholder="Create a strong password"
         required
+        minlength="8"
+        [class.invalid]="passwordRef.invalid && passwordRef.touched"
       />
+      <div class="validation"
+           *ngIf="passwordRef.errors?.['required'] && passwordRef.touched">
+        Password is required.
+      </div>
+      <div class="validation"
+           *ngIf="passwordRef.errors?.['minlength'] && passwordRef.touched">
+        Password must be atleast 8 characters.
+      </div>
 
       <label>Confirm Password</label>
       <input
         type="password"
         name="confirmPassword"
         [(ngModel)]="confirmPassword"
+        #confirmRef="ngModel"
         placeholder="Re-enter your password"
         required
+        [class.invalid]="
+          (confirmRef.touched && confirmPassword !== password) ||
+          (confirmRef.invalid && confirmRef.touched)
+        "
       />
+      <div class="validation"
+           *ngIf="confirmRef.invalid && confirmRef.touched">
+        Confirm password is required.
+      </div>
+      <div class="validation"
+           *ngIf="confirmRef.touched && confirmPassword !== password">
+        Passwords do not match.
+      </div>
 
       <div class="actions">
-        <button type="submit" class="primary">Register</button>
+        <button type="submit" class="primary" [disabled]="form.invalid">
+          Register
+        </button>
         <button type="button" class="cancel" (click)="cancel()">Cancel</button>
       </div>
 
-      <button class="back" type="button" routerLink="/login"  >
+      <button class="back" type="button" routerLink="/login">
         ← Back to Login
       </button>
 

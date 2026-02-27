@@ -85,3 +85,14 @@
     }
   }
 }
+input.invalid {
+  border: 1px solid #e53935 !important;
+  background: #fff5f5;
+}
+
+.validation {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}

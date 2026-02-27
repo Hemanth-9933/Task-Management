@@ -1,182 +1,299 @@
 <div class="board-wrapper">
 
-  <!-- ================= HEADER ================= -->
+  <div *ngIf="showEditPage && editableTask" class="edit-page">
+    <div class="edit-header">
+      <h1>Edit Task</h1>
 
-  <div class="top-section">
-    <h1>All Boards</h1>
-
-    <div class="right-actions">
-      <button class="filter-btn" (click)="showFilters = true">
-        <img src="/icons/filters.png" alt="filter">
-        Filters
+      <button class="delete-btn" (click)="deleteTask(editableTask)">
+        <img src="/icons/delete.png" />
+        Delete Task
       </button>
     </div>
-  </div>
 
+    <div class="edit-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Project</label>
+          <input [value]="editableTask.projectTitle" disabled />
+        </div>
 
-  <!-- ================= OVERLAY ================= -->
+        <div class="form-group">
+          <label>Title *</label>
+          <input [(ngModel)]="editableTask.title" />
+        </div>
 
-  <div class="filter-overlay"
-       *ngIf="showFilters"
-       (click)="showFilters = false">
-  </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select [(ngModel)]="editableTask.status">
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+          </select>
+        </div>
 
+        <div class="form-group">
+          <label>Priority *</label>
+          <select [(ngModel)]="editableTask.priority">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Urgent</option>
+          </select>
+        </div>
 
-  <!-- ================= RIGHT SIDE FILTER PANEL ================= -->
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea rows="4" [(ngModel)]="editableTask.description"></textarea>
+        </div>
 
-  <div class="filter-panel" *ngIf="showFilters">
+        <div class="form-group">
+          <label>Assignee</label>
+          <select [(ngModel)]="editableTask.assignee">
+            <option *ngFor="let a of assignees">{{ a }}</option>
+          </select>
+        </div>
 
-    <div class="filter-header">
-      <h3>Filters</h3>
-      <span class="close" (click)="showFilters = false">✕</span>
-    </div>
-
-
-    <!-- STATUS (UI Only – matches screenshot) -->
-    <div class="filter-card">
-      <h4>Status</h4>
-
-      <label><input type="checkbox"> To Do</label>
-      <label><input type="checkbox"> In Progress</label>
-      <label><input type="checkbox"> Done</label>
-      <label><input type="checkbox"> On Hold</label>
-    </div>
-
-
-    <!-- PRIORITY (WORKING DYNAMIC FILTER) -->
-    <div class="filter-card">
-      <h4>Priority</h4>
-
-      <label>
-        <input type="checkbox"
-               (change)="setFilter('low')"
-               [checked]="filterPriority === 'low'">
-        Low
-      </label>
-
-      <label>
-        <input type="checkbox"
-               (change)="setFilter('medium')"
-               [checked]="filterPriority === 'medium'">
-        Medium
-      </label>
-
-      <label>
-        <input type="checkbox"
-               (change)="setFilter('high')"
-               [checked]="filterPriority === 'high'">
-        High
-      </label>
-
-      <label>
-        <input type="checkbox"
-               (change)="setFilter('urgent')"
-               [checked]="filterPriority === 'urgent'">
-        Urgent
-      </label>
-    </div>
-
-
-    <div class="filter-card">
-      <h4>Assignee</h4>
-
-      <label><input type="checkbox"> Hemanth</label>
-      <label><input type="checkbox"> Vinoth</label>
-      <label><input type="checkbox"> Dinesh</label>
-      <label><input type="checkbox"> Shivam</label>
-    </div>
-
-
-    <button class="clear-btn" (click)="setFilter('')">
-      Clear All Filters
-    </button>
-
-  </div>
-
-  <div class="board" cdkDropListGroup>
-
-    <div class="column todo"
-         id="todo"
-         cdkDropList
-         [cdkDropListData]="todoTasks"
-         (cdkDropListDropped)="onDrop($event)">
-
-      <div class="column-header">
-        <h3>To Do</h3>
-        <span class="count">{{ todoTasks.length }}</span>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" [(ngModel)]="editableTask.dueDate" />
+        </div>
       </div>
 
-      <div class="task-card"
-           *ngFor="let task of todoTasks"
-           cdkDrag>
+      <div class="edit-actions">
+        <button class="save-btn" (click)="saveEdit()">Save Changes</button>
+        <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-project">{{ task.projectTitle }}</div>
+  <div *ngIf="showTaskDetails && selectedTask && !showEditPage" class="task-detail">
 
-        <div class="task-footer">
-          <span class="priority" [ngClass]="task.priority">
-            {{ task.priority }}
-          </span>
-          <span class="due">{{ task.dueDate }}</span>
+    <button class="back-btn" (click)="closeTask()">← Back</button>
+
+    <div class="detail-header">
+      <h1>{{ selectedTask.title }}</h1>
+
+      <div class="actions">
+        <button class="edit-btn" (click)="openEdit()">Edit</button>
+        <button class="delete-btn" (click)="deleteTask(selectedTask)">
+          <img src="/icons/delete.png" />
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <label>Status:</label>
+      <select
+        [value]="selectedTask.status"
+        (change)="changeStatus(selectedTask, $any($event.target).value)">
+        <option>To Do</option>
+        <option>In Progress</option>
+        <option>Done</option>
+      </select>
+
+      <label>Priority:</label>
+      <span class="priority" [ngClass]="selectedTask.priority">
+        {{ selectedTask.priority }}
+      </span>
+    </div>
+
+    <div class="detail-body">
+      <div class="info-card">
+        <div class="info-row">
+          <img src="/icons/timeline.png" />
+          <span>Due Date</span>
+          <strong>{{ selectedTask.dueDate }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Assignee</span>
+          <strong>{{ selectedTask.assignee }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Project</span>
+          <strong>{{ selectedTask.projectTitle }}</strong>
+        </div>
+      </div>
+
+      <div class="history">
+        <h3>Status History</h3>
+        <div class="history-item" *ngFor="let h of selectedTask.history">
+          <span class="badge">{{ h.status }}</span>
+          <small>{{ h.date | date:'short' }}</small>
         </div>
       </div>
     </div>
 
-
-    <div class="column progress"
-         id="inprogress"
-         cdkDropList
-         [cdkDropListData]="inProgressTasks"
-         (cdkDropListDropped)="onDrop($event)">
-
-      <div class="column-header">
-        <h3>In Progress</h3>
-        <span class="count">{{ inProgressTasks.length }}</span>
-      </div>
-
-      <div class="task-card"
-           *ngFor="let task of inProgressTasks"
-           cdkDrag>
-
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-project">{{ task.projectTitle }}</div>
-
-        <div class="task-footer">
-          <span class="priority" [ngClass]="task.priority">
-            {{ task.priority }}
-          </span>
-          <span class="due">{{ task.dueDate }}</span>
-        </div>
-      </div>
+    <div class="description">
+      <h4>Task Description</h4>
+      <p>{{ selectedTask.description }}</p>
     </div>
-
-
-    <div class="column done"
-         id="done"
-         cdkDropList
-         [cdkDropListData]="doneTasks"
-         (cdkDropListDropped)="onDrop($event)">
-
-      <div class="column-header">
-        <h3>Completed</h3>
-        <span class="count">{{ doneTasks.length }}</span>
-      </div>
-
-      <div class="task-card"
-           *ngFor="let task of doneTasks"
-           cdkDrag>
-
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-project">{{ task.projectTitle }}</div>
-
-        <div class="task-footer">
-          <span class="priority" [ngClass]="task.priority">
-            {{ task.priority }}
-          </span>
-          <span class="due">{{ task.dueDate }}</span>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <div *ngIf="!showTaskDetails && !showEditPage">
+
+    <div class="top-section">
+      <h1>All Boards</h1>
+
+      <div class="right-actions">
+        <button class="filter-btn" (click)="showFilters = true">
+          <img src="/icons/filters.png" alt="filter">
+          Filters
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-overlay"
+         *ngIf="showFilters"
+         (click)="showFilters = false">
+    </div>
+
+    <div class="filter-panel" *ngIf="showFilters">
+
+      <div class="filter-header">
+        <h3>Filters</h3>
+        <span class="close-btn" (click)="showFilters = false">✕</span>
+      </div>
+
+      <div class="filter-card">
+        <h4>Priority</h4>
+        <label *ngFor="let p of priorities">
+          <input type="checkbox"
+                 [checked]="selectedPriorities.includes(p)"
+                 (change)="togglePriority(p)" />
+          {{ p }}
+        </label>
+      </div>
+
+      <div class="filter-card">
+        <h4>Status</h4>
+        <label>
+          <input type="checkbox"
+                 [checked]="selectedStatuses.includes('To Do')"
+                 (change)="toggleStatus('To Do')" />
+          To Do
+        </label>
+
+        <label>
+          <input type="checkbox"
+                 [checked]="selectedStatuses.includes('In Progress')"
+                 (change)="toggleStatus('In Progress')" />
+          In Progress
+        </label>
+
+        <label>
+          <input type="checkbox"
+                 [checked]="selectedStatuses.includes('Done')"
+                 (change)="toggleStatus('Done')" />
+          Done
+        </label>
+      </div>
+
+      <div class="filter-card">
+        <h4>Assignee</h4>
+        <label *ngFor="let a of assignees">
+          <input type="checkbox"
+                 [checked]="selectedAssignees.includes(a)"
+                 (change)="toggleAssignee(a)" />
+          {{ a }}
+        </label>
+      </div>
+
+      <button class="clear-btn" (click)="clearFilters()">
+        Clear All Filters
+      </button>
+
+    </div>
+
+    <div class="board" cdkDropListGroup>
+
+      <div class="column todo"
+           id="todo"
+           cdkDropList
+           [cdkDropListData]="todoTasks"
+           (cdkDropListDropped)="onDrop($event)">
+
+        <div class="column-header">
+          <h3>To Do</h3>
+          <span class="count">{{ todoTasks.length }}</span>
+        </div>
+
+        <div class="task-card"
+             *ngFor="let task of todoTasks"
+             (click)="openTask(task)"
+             cdkDrag>
+
+          <div class="task-title">{{ task.title }}</div>
+          <div class="task-project">{{ task.projectTitle }}</div>
+
+          <div class="task-footer">
+            <span class="priority" [ngClass]="task.priority">
+              {{ task.priority }}
+            </span>
+            <span class="due">{{ task.dueDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column progress"
+           id="inprogress"
+           cdkDropList
+           [cdkDropListData]="inProgressTasks"
+           (cdkDropListDropped)="onDrop($event)">
+
+        <div class="column-header">
+          <h3>In Progress</h3>
+          <span class="count">{{ inProgressTasks.length }}</span>
+        </div>
+
+        <div class="task-card"
+             *ngFor="let task of inProgressTasks"
+             (click)="openTask(task)"
+             cdkDrag>
+
+          <div class="task-title">{{ task.title }}</div>
+          <div class="task-project">{{ task.projectTitle }}</div>
+
+          <div class="task-footer">
+            <span class="priority" [ngClass]="task.priority">
+              {{ task.priority }}
+            </span>
+            <span class="due">{{ task.dueDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column done"
+           id="done"
+           cdkDropList
+           [cdkDropListData]="doneTasks"
+           (cdkDropListDropped)="onDrop($event)">
+
+        <div class="column-header">
+          <h3>Completed</h3>
+          <span class="count">{{ doneTasks.length }}</span>
+        </div>
+
+        <div class="task-card"
+             *ngFor="let task of doneTasks"
+             (click)="openTask(task)"
+             cdkDrag>
+
+          <div class="task-title">{{ task.title }}</div>
+          <div class="task-project">{{ task.projectTitle }}</div>
+
+          <div class="task-footer">
+            <span class="priority" [ngClass]="task.priority">
+              {{ task.priority }}
+            </span>
+            <span class="due">{{ task.dueDate }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>

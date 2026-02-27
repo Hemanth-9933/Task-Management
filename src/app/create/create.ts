@@ -10,12 +10,11 @@ import { NotificationService } from '../services/notification.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './create.html',
-  styleUrls: ['./create.scss']   
+  styleUrls: ['./create.scss']
 })
-
 export class CreateComponent {
 
-  projectForm!: FormGroup;   
+  projectForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -25,10 +24,10 @@ export class CreateComponent {
   ) {
     this.projectForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      status: ['', Validators.required],
+      status: ['Planning', Validators.required],  // default fixed
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      description: ['', Validators.required]
+      description: ['']
     });
   }
 
@@ -48,7 +47,9 @@ export class CreateComponent {
       end: formValue.endDate,
       desc: formValue.description,
       tasks: [],
-      statusClass: formValue.status?.toLowerCase().replace(' ', '-')
+      statusClass: formValue.status
+        .toLowerCase()
+        .replace(/\s+/g, '-')  
     };
 
     const projects = this.taskService.getProjects();
@@ -60,6 +61,8 @@ export class CreateComponent {
   }
 
   resetForm() {
-    this.projectForm.reset();
+    this.projectForm.reset({
+      status: 'Planning'
+    });
   }
 }
