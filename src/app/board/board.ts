@@ -88,6 +88,7 @@ export class BoardComponent implements OnInit {
   }
 
   deleteTask(task: any) {
+    alert('Are you sure you want to delete this task?');
     const user = this.authService.currentUserValue;
     const key = user ? 'projects_' + user.email : 'projects_guest';
     const projects = JSON.parse(localStorage.getItem(key) || '[]');

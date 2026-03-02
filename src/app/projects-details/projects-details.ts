@@ -20,15 +20,17 @@ viewMode: 'list' | 'board' = 'list';
 
    selectedTask: any = null;
 
-  newTask: any = {
-    title: '',
-    status: 'To Do',
-    priority: 'Medium',
-    assignee: '',
-    dueDate: '',
-    description: ''
-  };
-
+  assignees: any[] = [];
+today: string = '';
+ 
+newTask: any = {
+  title: '',
+  status: 'To Do',
+  priority: 'medium',   
+  assigneeId: '',
+  dueDate: '',
+  description: ''
+};
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
@@ -37,6 +39,7 @@ viewMode: 'list' | 'board' = 'list';
 
  ngOnInit() {
   this.currentPage = 'main';
+  
  
   const id = Number(this.route.snapshot.paramMap.get('id'));
  
@@ -90,28 +93,32 @@ goToBoard() {
 
 
   saveTask() {
-    if (!this.project.tasks) {
-      this.project.tasks = [];
-    }
-
-    const taskToAdd = {
-      ...this.newTask,
-      id: Date.now()
-    };
-
-    this.project.tasks.push(taskToAdd);
-
-    this.taskService.updateProject(this.project);
-    this.calculateProgress();
-    this.showMain();
+  if (!this.project.tasks) {
+    this.project.tasks = [];
   }
 
+  const taskToAdd = {
+    id: Date.now(),
+    title: this.newTask.title,
+    description: this.newTask.description,
+    status: this.newTask.status,
+    assigned: this.newTask.assigneeId, 
+    dueDate: this.newTask.dueDate,
+    priority: this.newTask.priority.toLowerCase() 
+  };
+
+  this.project.tasks.push(taskToAdd);
+
+  this.taskService.updateProject(this.project);
+  this.calculateProgress();
+  this.showMain();
+}
   resetTaskForm() {
     this.newTask = {
       title: '',
       status: 'To Do',
       priority: 'Medium',
-      assignee: '',
+      assigneeId: '',
       dueDate: '',
       description: ''
     };
@@ -129,18 +136,19 @@ goToBoard() {
     }
   
 
-    const done = this.project.tasks.filter(
-      (t: any) => t.status === 'Completed'
-    ).length;
+   const done = this.project.tasks.filter(
+  (t: any) => t.status === 'Completed' || t.status === 'Done'
+).length;
 
     this.progressPercentage =
       (done / this.project.tasks.length) * 100;
   }
 
-  get completedTasks() {
-    return this.project?.tasks?.filter((t: any) => t.status === 'Completed') || [];
-  }
-
+get completedTasks() {
+  return this.project?.tasks?.filter(
+    (t: any) => t.status === 'Completed' || t.status === 'Done'
+  ) || [];
+}
   get todoTasks() {
     return this.project?.tasks?.filter((t: any) => t.status === 'To Do') || [];
   }

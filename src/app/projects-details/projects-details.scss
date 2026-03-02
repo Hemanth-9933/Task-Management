@@ -900,3 +900,72 @@ textarea {
   background: #fee2e2;
   color: #dc2626;
 }
+.status-badge,
+
+.priority-badge {
+
+  display: inline-block;
+
+  margin-top: 8px;
+
+  padding: 4px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+ 
+/* Status Colors */
+
+.todo {
+
+  background-color: #e3f2fd;
+
+  color: #1976d2;
+
+}
+ 
+.inprogress {
+
+  background-color: #fff3e0;
+
+  color: #ef6c00;
+
+}
+ 
+.done {
+
+  background-color: #e8f5e9;
+
+  color: #2e7d32;
+
+}
+ 
+
+.high {
+
+  background-color: #ffebee;
+
+  color: #c62828;
+
+}
+ 
+.medium {
+
+  background-color: #fff8e1;
+
+  color: #f9a825;
+
+}
+ 
+.low {
+
+  background-color: #e3f2fd;
+
+  color: #1565c0;
+
+}
+ 

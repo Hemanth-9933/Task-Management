@@ -15,12 +15,15 @@ import { NotificationService } from '../services/notification.service';
 export class CreateComponent {
 
   projectForm!: FormGroup;
+  today: string = '';
+minEndDate: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private taskService: TaskService,
     private notificationService: NotificationService
+    
   ) {
     this.projectForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -28,7 +31,23 @@ export class CreateComponent {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['']
+      
     });
+    const now = new Date();
+this.today = now.toISOString().split('T')[0];
+this.minEndDate = this.today;
+
+    this.projectForm.get('startDate')?.valueChanges.subscribe(value => {
+  if (value) {
+    this.minEndDate = value;
+
+    const endDate = this.projectForm.get('endDate')?.value;
+
+    if (endDate && endDate < value) {
+      this.projectForm.get('endDate')?.setValue('');
+    }
+  }
+});
   }
 
   onSubmit() {

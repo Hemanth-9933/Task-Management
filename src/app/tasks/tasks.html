@@ -129,7 +129,6 @@
 
   </div>
 
-  <!-- ================= CREATE PAGE ================= -->
   <div *ngIf="showCreateTaskForm && !editingTask" class="create-page">
 
     <div class="create-header">
@@ -227,7 +226,6 @@
     </div>
   </div>
 
-  <!-- ================= UPDATE TASK PAGE ================= -->
   <div *ngIf="editingTask" class="update-page">
 
     <div class="update-header">
@@ -323,7 +321,6 @@
     </div>
   </div>
 
-  <!-- ================= TASK DETAILS MODAL ================= -->
   <div *ngIf="selectedTask" class="modal-overlay" (click)="closeTaskDetails()">
 
     <div class="modal-content" (click)="$event.stopPropagation()">
