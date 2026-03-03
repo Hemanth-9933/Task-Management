@@ -27,7 +27,7 @@ minEndDate: string = '';
   ) {
     this.projectForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      status: ['Planning', Validators.required],  // default fixed
+      status: ['Planning', Validators.required],  
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       description: ['']
@@ -75,7 +75,7 @@ this.minEndDate = this.today;
     projects.push(newProject);
     this.taskService.saveProjects(projects);
 
-    this.notificationService.addNotification('Project created successfully');
+    this.notificationService.addNotification('Project {created} successfully');
     this.router.navigate(['/projects']);
   }
 
