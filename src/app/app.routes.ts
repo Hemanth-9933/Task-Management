@@ -3,11 +3,11 @@ import { AuthGuard } from './guards/auth.guard';
 import path from 'path/win32';
 
 export const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadComponent: () => import('./root-redirect.component').then(m => m.RootRedirectComponent),
-  //   pathMatch: 'full'
-  // },
+ {
+  path: '',
+  redirectTo: 'dashboard',
+  pathMatch: 'full'
+},
 
   {
     path: 'login',
