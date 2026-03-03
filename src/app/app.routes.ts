@@ -5,7 +5,7 @@ import path from 'path/win32';
 export const routes: Routes = [
  {
   path: '',
-  redirectTo: 'dashboard',
+  redirectTo: 'login',
   pathMatch: 'full'
 },
 
