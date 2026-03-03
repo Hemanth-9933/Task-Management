@@ -71,6 +71,8 @@ hasSpecialChar = false;
 
  register(form: NgForm) {
 
+  this.error = '';
+
   if (form.invalid) return;
 
   if (!this.hasMinLength || !this.hasUpperCase ||
@@ -84,21 +86,27 @@ hasSpecialChar = false;
     return;
   }
 
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+  // ✅ CHECK IF EMAIL ALREADY EXISTS
+  const emailExists = users.some(
+    (u: any) => u.email.toLowerCase() === this.email.toLowerCase()
+  );
+
+  if (emailExists) {
+    this.error = 'Email is already registered.';
+    return;
+  }
+
   const user = {
     username: this.username,
     email: this.email,
     password: this.password
   };
 
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
   users.push(user);
   localStorage.setItem('users', JSON.stringify(users));
 
   this.router.navigate(['/login']);
-}
-
-  cancel() {
-    this.router.navigate(['/login']);
-  }
-
+ }
 }
