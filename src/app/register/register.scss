@@ -96,3 +96,80 @@ input.invalid {
   margin-top: 4px;
   margin-bottom: 10px;
 }
+/* ===== Password Strength ===== */
+
+.strength-text {
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.strength-text .weak {
+  color: #e53935;
+}
+
+.strength-text .strong {
+  color: #8bc34a;
+}
+
+.strength-text .super-strong {
+  color: #2e7d32;
+}
+
+.strength-bar-wrapper {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  margin: 6px 0 10px 0;
+  overflow: hidden;
+}
+
+.strength-bar {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.strength-bar.weak {
+  background: #e53935;
+}
+
+.strength-bar.strong {
+  background: #8bc34a;
+}
+
+.strength-bar.super-strong {
+  background: #2e7d32;
+}
+
+.rules {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.rules div {
+  color: #999;
+}
+
+.rules div.valid {
+  color: #2e7d32;
+}
+.rules div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #999;
+}
+
+.rules div.valid {
+  color: #2e7d32;
+}
+
+.rules span {
+  font-weight: bold;
+  width: 14px;
+  display: inline-block;
+}

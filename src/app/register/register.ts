@@ -19,6 +19,15 @@ export class RegisterComponent implements OnInit {
   confirmPassword = '';
   error = '';
 
+  strengthText = '';
+strengthClass = '';
+strengthWidth = 0;
+
+hasMinLength = false;
+hasUpperCase = false;
+hasNumber = false;
+hasSpecialChar = false;
+
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
@@ -27,24 +36,66 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  register(form: NgForm) {
+  checkPasswordStrength() {
 
-    if (form.invalid) {
-      return;
-    }
+  const value = this.password || '';
 
-    if (this.password !== this.confirmPassword) {
-      return;
-    }
+  this.hasMinLength = value.length >= 8;
+  this.hasUpperCase = /[A-Z]/.test(value);
+  this.hasNumber = /[0-9]/.test(value);
+  this.hasSpecialChar = /[^A-Za-z0-9]/.test(value);
 
-    this.authService.register({
-      username: this.username,
-      email: this.email,
-      password: this.password,
-    });
+  let score = 0;
 
-    this.router.navigate(['/login']);
+  if (this.hasMinLength) score++;
+  if (this.hasUpperCase) score++;
+  if (this.hasNumber) score++;
+  if (this.hasSpecialChar) score++;
+
+  if (score <= 2) {
+    this.strengthText = 'Weak';
+    this.strengthClass = 'weak';
+    this.strengthWidth = 33;
   }
+  else if (score === 3) {
+    this.strengthText = 'Strong';
+    this.strengthClass = 'strong';
+    this.strengthWidth = 66;
+  }
+  else {
+    this.strengthText = 'Super Strong';
+    this.strengthClass = 'super-strong';
+    this.strengthWidth = 100;
+  }
+}
+
+ register(form: NgForm) {
+
+  if (form.invalid) return;
+
+  if (!this.hasMinLength || !this.hasUpperCase ||
+      !this.hasNumber || !this.hasSpecialChar) {
+    this.error = 'Password does not meet required conditions.';
+    return;
+  }
+
+  if (this.password !== this.confirmPassword) {
+    this.error = 'Passwords do not match.';
+    return;
+  }
+
+  const user = {
+    username: this.username,
+    email: this.email,
+    password: this.password
+  };
+
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  users.push(user);
+  localStorage.setItem('users', JSON.stringify(users));
+
+  this.router.navigate(['/login']);
+}
 
   cancel() {
     this.router.navigate(['/login']);

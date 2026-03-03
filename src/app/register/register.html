@@ -41,48 +41,96 @@
            *ngIf="emailRef.invalid && emailRef.touched">
         Email is required.
       </div>
+<label>Password</label>
+<input
+  type="password"
+  name="password"
+  [(ngModel)]="password"
+  #passwordRef="ngModel"
+  (input)="checkPasswordStrength()"
+  placeholder="Create a strong password"
+  required
+  minlength="8"
+  [class.invalid]="passwordRef.invalid && passwordRef.touched"
+/>
 
-      <label>Password</label>
-      <input
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        #passwordRef="ngModel"
-        placeholder="Create a strong password"
-        required
-        minlength="8"
-        [class.invalid]="passwordRef.invalid && passwordRef.touched"
-      />
-      <div class="validation"
-           *ngIf="passwordRef.errors?.['required'] && passwordRef.touched">
-        Password is required.
-      </div>
-      <div class="validation"
-           *ngIf="passwordRef.errors?.['minlength'] && passwordRef.touched">
-        Password must be atleast 8 characters.
-      </div>
+<div class="validation"
+     *ngIf="passwordRef.errors?.['required'] && passwordRef.touched">
+  Password is required.
+</div>
 
-      <label>Confirm Password</label>
-      <input
-        type="password"
-        name="confirmPassword"
-        [(ngModel)]="confirmPassword"
-        #confirmRef="ngModel"
-        placeholder="Re-enter your password"
-        required
-        [class.invalid]="
-          (confirmRef.touched && confirmPassword !== password) ||
-          (confirmRef.invalid && confirmRef.touched)
-        "
-      />
-      <div class="validation"
-           *ngIf="confirmRef.invalid && confirmRef.touched">
-        Confirm password is required.
-      </div>
-      <div class="validation"
-           *ngIf="confirmRef.touched && confirmPassword !== password">
-        Passwords do not match.
-      </div>
+<div class="validation"
+     *ngIf="passwordRef.errors?.['minlength'] && passwordRef.touched">
+  Password must be atleast 8 characters.
+</div>
+
+<div class="strength-text" *ngIf="password">
+  Password strength:
+  <span [ngClass]="strengthClass">{{ strengthText }}</span>
+</div>
+<label>Confirm Password</label>
+<input
+  type="password"
+  name="confirmPassword"
+  [(ngModel)]="confirmPassword"
+  #confirmRef="ngModel"
+  placeholder="Re-enter your password"
+  required
+  (input)="checkPasswordStrength()"
+  [class.invalid]="
+    confirmRef.touched &&
+    (confirmPassword !== password || confirmRef.invalid)
+  "
+/>
+
+<div class="validation"
+     *ngIf="confirmRef.invalid && confirmRef.touched">
+  Confirm password is required.
+</div>
+
+<div class="rules" *ngIf="confirmPassword">
+
+  <div [class.valid]="confirmPassword === password">
+    <span *ngIf="confirmPassword === password">✔</span>
+    <span *ngIf="confirmPassword !== password">✖</span>
+    Passwords must match
+  </div>
+
+</div>
+
+<div class="strength-bar-wrapper" *ngIf="password">
+  <div class="strength-bar"
+       [ngClass]="strengthClass"
+       [style.width.%]="strengthWidth">
+  </div>
+</div>
+<div class="rules" *ngIf="password">
+
+  <div [class.valid]="hasMinLength">
+    <span *ngIf="hasMinLength">✔</span>
+    <span *ngIf="!hasMinLength">✖</span>
+    At least 8 characters
+  </div>
+
+  <div [class.valid]="hasUpperCase">
+    <span *ngIf="hasUpperCase">✔</span>
+    <span *ngIf="!hasUpperCase">✖</span>
+    One uppercase letter
+  </div>
+
+  <div [class.valid]="hasNumber">
+    <span *ngIf="hasNumber">✔</span>
+    <span *ngIf="!hasNumber">✖</span>
+    One number
+  </div>
+
+  <div [class.valid]="hasSpecialChar">
+    <span *ngIf="hasSpecialChar">✔</span>
+    <span *ngIf="!hasSpecialChar">✖</span>
+    One special character
+  </div>
+
+</div>
 
       <div class="actions">
         <button type="submit" class="primary" [disabled]="form.invalid">
