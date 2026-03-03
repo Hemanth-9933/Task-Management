@@ -50,6 +50,7 @@
 <option value="Low">Low</option>
 <option value="Medium">Medium</option>
 <option value="High">High</option>
+<option value="urjent">Urjent</option>
 </select>
  
 <span
@@ -57,7 +58,9 @@
     [ngClass]="{
       'high': newTask.priority === 'High',
       'medium': newTask.priority === 'Medium',
-      'low': newTask.priority === 'Low'
+      'low': newTask.priority === 'Low',
+      'urjent':newTask.Priority ==='urjent'
+
     }">
     {{ newTask.priority }}
 </span>
@@ -105,6 +108,73 @@
 </button>
 </div>
 </div>
+</div>
+
+<div *ngIf="currentPage === 'editProject'" class="form-page">
+ 
+  <div class="page-header">
+<h2>Edit Project</h2>
+</div>
+ 
+  <div class="form-card">
+<div class="form-grid">
+ 
+<div class="form-group">
+<label>Project Title *</label>
+<input type="text" [(ngModel)]="project.title">
+</div>
+ 
+<div class="form-group">
+<label>Status *</label>
+<select [(ngModel)]="project.status">
+  <option value="Planning">Planning</option>
+<option value="In Progress">In Progress</option>
+<option value="On Hold">On Hold</option>
+<option value="Completed">Completed</option>
+</select>
+ 
+        <span class="status-badge"
+
+              [ngClass]="project.status?.replace(' ','').toLowerCase()">
+
+          {{ project.status }}
+</span>
+</div>
+ 
+<div class="form-group">
+<label>Start Date *</label>
+<input type="date" [(ngModel)]="project.startDate">
+</div>
+ 
+<div class="form-group">
+<label>End Date *</label>
+<input type="date"
+
+               [(ngModel)]="project.endDate"
+
+               [min]="project.startDate">
+</div>
+ 
+<div class="form-group full">
+<label>Description</label>
+<textarea [(ngModel)]="project.desc"></textarea>
+</div>
+ 
+    </div>
+ 
+    <div class="form-actions">
+<button class="btn green" (click)="saveProject()">
+
+        Save Changes
+</button>
+ 
+      <button class="btn outline" (click)="showMain()">
+
+        Cancel
+</button>
+</div>
+</div>
+ 
 </div>
  
 
@@ -234,6 +304,7 @@
   </div>
 
 </div>
+
   <div *ngIf="currentPage === 'list'" class="separate-page">
 
     <h2>Task List</h2>
