@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import path from 'path/win32';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('./root-redirect.component').then(m => m.RootRedirectComponent),
-    pathMatch: 'full'
-  },
+  // {
+  //   path: '',
+  //   loadComponent: () => import('./root-redirect.component').then(m => m.RootRedirectComponent),
+  //   pathMatch: 'full'
+  // },
 
   {
     path: 'login',
@@ -35,7 +36,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
-  // ✅ Create Project Page
   {
   path: 'projects/create',
   loadComponent: () => import('./create/create').then(m => m.CreateComponent),
@@ -65,5 +65,12 @@ export const routes: Routes = [
     path: 'profile',
     loadComponent: () => import('./profile/profile').then(m => m.ProfileComponent),
     canActivate: [AuthGuard]
+  },
+
+
+    {
+    path: '**',
+    redirectTo: ''
   }
+
 ];
