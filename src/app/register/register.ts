@@ -68,45 +68,48 @@ hasSpecialChar = false;
     this.strengthWidth = 100;
   }
 }
+  register(form: NgForm) {
 
- register(form: NgForm) {
+    this.error = '';
 
-  this.error = '';
+    if (form.invalid) return;
 
-  if (form.invalid) return;
+    if (!this.hasMinLength || !this.hasUpperCase ||
+        !this.hasNumber || !this.hasSpecialChar) {
+      this.error = 'Password does not meet required conditions.';
+      return;
+    }
 
-  if (!this.hasMinLength || !this.hasUpperCase ||
-      !this.hasNumber || !this.hasSpecialChar) {
-    this.error = 'Password does not meet required conditions.';
-    return;
+    if (this.password !== this.confirmPassword) {
+      this.error = 'Passwords do not match.';
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    const emailExists = users.some(
+      (u: any) => u.email.toLowerCase() === this.email.toLowerCase()
+    );
+
+    if (emailExists) {
+      this.error = 'Email is already registered.';
+      return;
+    }
+
+    const user = {
+      username: this.username,
+      email: this.email,
+      password: this.password
+    };
+
+    users.push(user);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    this.router.navigate(['/login']);
+  }   
+
+  cancel() {
+    this.router.navigate(['/login']);
   }
 
-  if (this.password !== this.confirmPassword) {
-    this.error = 'Passwords do not match.';
-    return;
-  }
-
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-  // ✅ CHECK IF EMAIL ALREADY EXISTS
-  const emailExists = users.some(
-    (u: any) => u.email.toLowerCase() === this.email.toLowerCase()
-  );
-
-  if (emailExists) {
-    this.error = 'Email is already registered.';
-    return;
-  }
-
-  const user = {
-    username: this.username,
-    email: this.email,
-    password: this.password
-  };
-
-  users.push(user);
-  localStorage.setItem('users', JSON.stringify(users));
-
-  this.router.navigate(['/login']);
- }
-}
+}   
