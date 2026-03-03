@@ -36,6 +36,12 @@ export class AuthService {
     users.push({ ...userData, createdAt: new Date(), profilePhoto: null });
     localStorage.setItem('users', JSON.stringify(users));
   }
+  isLoggedIn(): boolean {
+  if (isPlatformBrowser(this.platformId)) {
+    return !!localStorage.getItem('currentUser');
+  }
+  return false;
+}
 
   logout() {
     localStorage.removeItem('currentUser');
@@ -45,6 +51,7 @@ export class AuthService {
   get currentUserValue() {
     return this.currentUserSubject.value;
   }
+  
 
   updateCurrentUser(user: any) {
     this.currentUserSubject.next(user);

@@ -7,18 +7,18 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
-  canActivate(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      const currentUser = this.authService.currentUserValue;
-      if (currentUser) {
-        return true;
-      } else {
-        this.router.navigate(['/login']);
-        return false;
-      }
-    } else {
-      // On server, allow to render, client will handle redirect
+canActivate(): boolean {
+  if (isPlatformBrowser(this.platformId)) {
+    const user = localStorage.getItem('currentUser');
+ 
+    if (user) {
       return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
     }
   }
+ 
+  return true;
 }
+  }
