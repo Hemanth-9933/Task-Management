@@ -114,12 +114,12 @@ updateProjectStatuses() {
       return;
     }
 
-    const completedTasks = tasks.filter((t: any) => t.status === 'Done').length;
+    const completedTasks = tasks.filter((t: any) => t.status === 'Completed').length;
 
     const overdueTasks = tasks.filter((t: any) =>
       t.dueDate &&
       new Date(t.dueDate) < new Date() &&
-      t.status !== 'Done'
+      t.status !== 'Completed'
     ).length;
 
     if (completedTasks === totalTasks) {

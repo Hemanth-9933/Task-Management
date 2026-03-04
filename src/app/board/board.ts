@@ -21,7 +21,7 @@ export class BoardComponent implements OnInit {
 
   todoTasks: any[] = [];
   inProgressTasks: any[] = [];
-  doneTasks: any[] = [];
+  CompletedTasks: any[] = [];
   allTasks: any[] = [];
 
   selectedTask: any = null;
@@ -171,7 +171,7 @@ export class BoardComponent implements OnInit {
 
     this.todoTasks = filtered.filter(t => t.status === 'To Do');
     this.inProgressTasks = filtered.filter(t => t.status === 'In Progress');
-    this.doneTasks = filtered.filter(t => t.status === 'Done');
+    this.CompletedTasks = filtered.filter(t => t.status === 'Completed');
   }
 
 
@@ -211,7 +211,7 @@ export class BoardComponent implements OnInit {
     switch (id) {
       case 'todo': return 'To Do';
       case 'inprogress': return 'In Progress';
-      case 'done': return 'Done';
+      case 'Completed': return 'Completed';
       default: return 'To Do';
     }
   }

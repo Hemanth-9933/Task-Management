@@ -194,6 +194,22 @@ export class TasksComponent implements OnInit {
     this.editTaskForm = { ...task };
     this.showCreateTaskForm = false;
   }
+  getSelectedProject() {
+  return this.projects.find(
+    (p: any) => p.id == this.newTask.projectId
+  );
+}
+
+getSelectedProjectStartDate(): string {
+  const project = this.getSelectedProject();
+  return project?.startDate || '';
+}
+
+getSelectedProjectEndDate(): string {
+  const project = this.getSelectedProject();
+  return project?.endDate || '';
+}
+
 
   saveEditedTask() {
     if (!this.editTaskForm.title.trim()) {
@@ -220,7 +236,21 @@ export class TasksComponent implements OnInit {
       }
     }
   }
+getEditProject() {
+  return this.projects.find(
+    (p: any) => p.id == this.editTaskForm.projectId
+  );
+}
 
+getEditProjectStartDate(): string {
+  const project = this.getEditProject();
+  return project?.startDate || '';
+}
+
+getEditProjectEndDate(): string {
+  const project = this.getEditProject();
+  return project?.endDate || '';
+}
   cancelEdit() {
     this.editingTask = null;
     this.editTaskForm = {};

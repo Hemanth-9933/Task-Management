@@ -36,20 +36,21 @@ newTask: any = {
     private taskService: TaskService,
     private router: Router
   ) {}
-
 ngOnInit() {
 
   this.currentPage = 'main';
 
-  const id = Number(this.route.snapshot.paramMap.get('id'));
+  this.route.paramMap.subscribe(params => {
 
-  this.taskService.projects$.subscribe(projects => {
+    const id = Number(params.get('id'));
+
+    const projects = this.taskService.getProjects(); // 👈 create this method if not present
 
     const foundProject = projects.find((p: any) => p.id === id);
 
     if (foundProject) {
 
-      this.project = { ...foundProject };
+      this.project = JSON.parse(JSON.stringify(foundProject));
 
       this.project.startDate = this.formatDateForInput(this.project.startDate);
       this.project.endDate = this.formatDateForInput(this.project.endDate);
@@ -59,9 +60,11 @@ ngOnInit() {
       }
 
       this.calculateProgress();
+      this.updateProjectStatusAutomatically();
     }
 
   });
+
 }
 formatDateForInput(date: string): string {
 
@@ -85,6 +88,7 @@ formatDateForInput(date: string): string {
   drop(event: CdkDragDrop<any>, newStatus: string) {
     const task = event.item.data;
     task.status = newStatus;
+    this.updateProjectStatusAutomatically();
 
     this.taskService.updateProject(this.project);
     this.calculateProgress();
@@ -117,6 +121,7 @@ goToBoard() {
   saveTask() {
   if (!this.project.tasks) {
     this.project.tasks = [];
+    this.updateProjectStatusAutomatically();
   }
 
   const taskToAdd = {
@@ -124,7 +129,7 @@ goToBoard() {
     title: this.newTask.title,
     description: this.newTask.description,
     status: this.newTask.status,
-    assigned: this.newTask.assigneeId, 
+    assignee: this.newTask.assigneeId, 
     dueDate: this.newTask.dueDate,
     priority: this.newTask.priority.toLowerCase() 
   };
@@ -173,9 +178,14 @@ convertToISO(date: string): string {
   calculateProgress() {
     if (!this.project?.tasks?.length) {
       this.progressPercentage = 0;
+      this.updateProjectStatusAutomatically();
+
       return;
     }
-  
+
+
+
+ 
 
    const completed = this.project.tasks.filter(
   (t: any) => t.status === 'Completed' || t.status === 'Completed'
@@ -241,4 +251,28 @@ getProgressPercentage() {
       this.router.navigate(['/projects']);
     }
   }
-}
+   updateProjectStatusAutomatically() {
+
+    if (!this.project?.tasks?.length) {
+      this.project.status = 'Planning';
+      return;
+    }
+
+    const total = this.project.tasks.length;
+
+    const completed = this.project.tasks.filter(
+      (t: any) => t.status === 'Completed'
+    ).length;
+
+    if (completed === total) {
+      this.project.status = 'Completed';
+    } else if (completed > 0) {
+      this.project.status = 'In Progress';
+    } else {
+      this.project.status = 'Planning';
+    }
+
+    this.taskService.updateProject(this.project);
+  }
+
+} 

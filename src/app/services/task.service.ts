@@ -80,8 +80,8 @@ export class TaskService {
   }
 
   getProjects() {
-    return this.projectsSubject.value;
-  }
+  return this.projectsSubject.value;
+}
 }
 
 @Injectable({ providedIn: 'root' })

@@ -211,9 +211,16 @@
           <div class="field">
             <label>Due Date *</label>
             <input type="date"
-                   [(ngModel)]="newTask.dueDate"
-                   name="dueDate"
-                   required>
+       [(ngModel)]="newTask.dueDate"
+       name="dueDate"
+       [min]="getSelectedProjectStartDate()"
+       [max]="getSelectedProjectEndDate()"
+       required>
+
+<small class="date-info">
+  Allowed between {{ getSelectedProjectStartDate() }} 
+  and {{ getSelectedProjectEndDate() }}
+</small>
           </div>
         </div>
 

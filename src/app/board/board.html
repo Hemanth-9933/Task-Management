@@ -27,7 +27,7 @@
           <select [(ngModel)]="editableTask.status">
             <option>To Do</option>
             <option>In Progress</option>
-            <option>Done</option>
+            <option>Completed</option>
           </select>
         </div>
 
@@ -89,7 +89,7 @@
         (change)="changeStatus(selectedTask, $any($event.target).value)">
         <option>To Do</option>
         <option>In Progress</option>
-        <option>Done</option>
+        <option>Completed</option>
       </select>
 
       <label>Priority:</label>
@@ -185,9 +185,9 @@
 
         <label>
           <input type="checkbox"
-                 [checked]="selectedStatuses.includes('Done')"
-                 (change)="toggleStatus('Done')" />
-          Done
+                 [checked]="selectedStatuses.includes('Completed')"
+                 (change)="toggleStatus('Completed')" />
+          Completed
         </label>
       </div>
 
@@ -265,19 +265,19 @@
         </div>
       </div>
 
-      <div class="column done"
-           id="done"
+      <div class="column Completed"
+           id="Completed"
            cdkDropList
-           [cdkDropListData]="doneTasks"
+           [cdkDropListData]="CompletedTasks"
            (cdkDropListDropped)="onDrop($event)">
 
         <div class="column-header">
           <h3>Completed</h3>
-          <span class="count">{{ doneTasks.length }}</span>
+          <span class="count">{{ CompletedTasks.length }}</span>
         </div>
 
         <div class="task-card"
-             *ngFor="let task of doneTasks"
+             *ngFor="let task of CompletedTasks"
              (click)="openTask(task)"
              cdkDrag>
 
