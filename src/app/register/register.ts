@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { CallTracker } from 'node:assert';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +19,7 @@ export class RegisterComponent implements OnInit {
   password = '';
   confirmPassword = '';
   error = '';
+  emailExistsError = false;
 
   strengthText = '';
 strengthClass = '';
@@ -68,48 +70,57 @@ hasSpecialChar = false;
     this.strengthWidth = 100;
   }
 }
-  register(form: NgForm) {
+register(form: NgForm) {
+ 
+  if (form.invalid) return;
+ 
+  this.error = '';
 
-    this.error = '';
+  this.emailExistsError = false;
+ 
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+ 
+  console.log('Stored Users:', users);
 
-    if (form.invalid) return;
+  console.log('Entered Email:', this.email);
+ 
+  const emailExists = users.some(
 
-    if (!this.hasMinLength || !this.hasUpperCase ||
-        !this.hasNumber || !this.hasSpecialChar) {
-      this.error = 'Password does not meet required conditions.';
-      return;
-    }
+    (u: any) =>
 
-    if (this.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match.';
-      return;
-    }
+      u.email &&
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+      u.email.toLowerCase().trim() ===
 
-    const emailExists = users.some(
-      (u: any) => u.email.toLowerCase() === this.email.toLowerCase()
-    );
+      this.email.toLowerCase().trim()
 
-    if (emailExists) {
-      this.error = 'Email is already registered.';
-      return;
-    }
+  );
+ 
+  console.log('Email Exists:', emailExists);
+ 
+  if (emailExists) {
 
-    const user = {
-      username: this.username,
-      email: this.email,
-      password: this.password
-    };
+    this.emailExistsError = true;
 
-    users.push(user);
-    localStorage.setItem('users', JSON.stringify(users));
+    return;
 
-    this.router.navigate(['/login']);
-  }   
-
-  cancel() {
-    this.router.navigate(['/login']);
   }
+ 
+  const user = {
 
-}   
+    username: this.username.trim(),
+
+    email: this.email.trim(),
+
+    password: this.password
+
+  };
+ 
+  users.push(user);
+
+  localStorage.setItem('users', JSON.stringify(users));
+ 
+  this.router.navigate(['/login']);
+
+}
+}

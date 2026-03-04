@@ -62,8 +62,8 @@ this.minEndDate = this.today;
       id: Date.now(),
       title: formValue.name,
       status: formValue.status,
-      start: formValue.startDate,
-      end: formValue.endDate,
+      startDate: formValue.startDate,
+endDate: formValue.endDate,
       desc: formValue.description,
       tasks: [],
       statusClass: formValue.status

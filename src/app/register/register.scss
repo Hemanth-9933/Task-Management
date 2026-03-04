@@ -173,3 +173,12 @@ input.invalid {
   width: 14px;
   display: inline-block;
 }
+input.invalid {
+  border: 1px solid red;
+}
+
+.validation {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}

@@ -37,24 +37,45 @@ newTask: any = {
     private router: Router
   ) {}
 
- ngOnInit() {
+ngOnInit() {
+
   this.currentPage = 'main';
-  
- 
+
   const id = Number(this.route.snapshot.paramMap.get('id'));
- 
+
   this.taskService.projects$.subscribe(projects => {
-    this.project = projects.find((p: any) => p.id === id);
- 
-    if (this.project) {
+
+    const foundProject = projects.find((p: any) => p.id === id);
+
+    if (foundProject) {
+
+      this.project = { ...foundProject };
+
+      this.project.startDate = this.formatDateForInput(this.project.startDate);
+      this.project.endDate = this.formatDateForInput(this.project.endDate);
+
       if (!this.project.tasks) {
         this.project.tasks = [];
       }
+
       this.calculateProgress();
     }
+
   });
 }
+formatDateForInput(date: string): string {
 
+  if (!date) return '';
+
+  const d = new Date(date);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+ 
 
   setView(mode: 'list' | 'board') {
     this.viewMode = mode;
@@ -74,10 +95,11 @@ newTask: any = {
     this.currentPage = 'main';
   }
 
-  openCreateTask() {
-    this.resetTaskForm();
-    this.currentPage = 'createTask';
-  }
+openCreateTask() {
+  this.resetTaskForm();
+  this.newTask.dueDate = this.project.startDate; 
+  this.currentPage = 'createTask';
+}
 
   openEditProject() {
     this.currentPage = 'editProject';
@@ -124,10 +146,29 @@ goToBoard() {
     };
   }
 
-  saveProject() {
-    this.taskService.updateProject(this.project);
-        this.showMain();
+saveProject() {
+ 
+  this.project.startDate = this.convertToISO(this.project.startDate);
+  this.project.endDate = this.convertToISO(this.project.endDate);
+ 
+  this.taskService.updateProject(this.project);
+  this.showMain();
+}
+convertToISO(date: string): string {
+
+  if (!date) return '';
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
   }
+
+  if (date.includes('/')) {
+    const [day, month, year] = date.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  return date;
+}
 
   calculateProgress() {
     if (!this.project?.tasks?.length) {
@@ -136,17 +177,17 @@ goToBoard() {
     }
   
 
-   const done = this.project.tasks.filter(
-  (t: any) => t.status === 'Completed' || t.status === 'Done'
+   const completed = this.project.tasks.filter(
+  (t: any) => t.status === 'Completed' || t.status === 'Completed'
 ).length;
 
     this.progressPercentage =
-      (done / this.project.tasks.length) * 100;
+      (completed / this.project.tasks.length) * 100;
   }
 
 get completedTasks() {
   return this.project?.tasks?.filter(
-    (t: any) => t.status === 'Completed' || t.status === 'Done'
+    (t: any) => t.status === 'Completed' || t.status === 'Completed'
   ) || [];
 }
   get todoTasks() {
@@ -167,12 +208,32 @@ get completedTasks() {
 getStatusCount(status: string) {
   return this.project.tasks?.filter((t:any) => t.status === status).length || 0;
 }
-
 getProgressPercentage() {
-  const total = this.project.tasks?.length || 0;
-  const completed = this.getCompletedCount();
-  return total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  const tasks = this.project.tasks || [];
+
+  if (!tasks.length) return 0;
+ 
+  let score = 0;
+ 
+  tasks.forEach((task: any) => {
+
+    if (task.status === 'Completed') {
+
+      score += 1;
+
+    } else if (task.status === 'In Progress') {
+
+      score += 0.5;
+
+    }
+
+  });
+ 
+  return (score / tasks.length) * 100;
+
 }
+ 
 
   deleteProject() {
     if (confirm('Delete project?')) {

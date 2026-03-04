@@ -21,7 +21,7 @@
   <select [(ngModel)]="newTask.status">
 <option value="To Do">To Do</option>
 <option value="In Progress">In Progress</option>
-<option value="Done">Done</option>
+<option value="Completed">completed</option>
 </select>
  
 <span
@@ -34,7 +34,7 @@
 
       'inprogress': newTask.status === 'In Progress',
 
-      'done': newTask.status === 'Done'
+      'Completed': newTask.status === 'Completed'
 
     }">
 
@@ -80,14 +80,19 @@
 </option>
 </select>
 </div>
- 
 <div class="form-group">
-<label>Due Date *</label>
-<input type="date"
+  <label>Due Date *</label>
 
-               [(ngModel)]="newTask.dueDate"
+  <input
+    type="date"
+    [(ngModel)]="newTask.dueDate"
+    [min]="project?.startDate"
+    [max]="project?.endDate"
+  />
 
-               [min]="today">
+  <small class="date-info">
+    Allowed between {{ project?.startDate }} and {{ project?.endDate }}
+  </small>
 </div>
  
 <div class="form-group full">

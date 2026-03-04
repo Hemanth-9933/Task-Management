@@ -25,22 +25,32 @@
            *ngIf="usernameRef.invalid && usernameRef.touched">
         Please enter your name.
       </div>
-
-      <label>Email</label>
-      <input
-        type="email"
-        name="email"
-        [(ngModel)]="email"
-        #emailRef="ngModel"
-        placeholder="Enter your email"
-        required
-        email
-        [class.invalid]="emailRef.invalid && emailRef.touched"
-      />
-      <div class="validation"
-           *ngIf="emailRef.invalid && emailRef.touched">
-        Email is required.
-      </div>
+<label>Email</label>
+<input
+  type="email"
+  name="email"
+  [(ngModel)]="email"
+  #emailRef="ngModel"
+  (input)="emailExistsError = false"
+  placeholder="Enter your email"
+  required
+  email
+  [class.invalid]="
+    (emailRef.invalid && emailRef.touched) || emailExistsError
+  "
+/>
+<div class="validation"
+     *ngIf="emailRef.errors?.['required'] && emailRef.touched">
+  Email is required.
+</div>
+<div class="validation"
+     *ngIf="emailRef.errors?.['email'] && emailRef.touched">
+  Please enter a valid email.
+</div>
+<div class="validation"
+     *ngIf="emailExistsError">
+  Email is already registered.
+</div>
 <label>Password</label>
 <input
   type="password"
@@ -104,30 +114,23 @@
        [style.width.%]="strengthWidth">
   </div>
 </div>
+
 <div class="rules" *ngIf="password">
 
   <div [class.valid]="hasMinLength">
-    <span *ngIf="hasMinLength">✔</span>
-    <span *ngIf="!hasMinLength">✖</span>
-    At least 8 characters
+    ✔ At least 8 characters
   </div>
 
   <div [class.valid]="hasUpperCase">
-    <span *ngIf="hasUpperCase">✔</span>
-    <span *ngIf="!hasUpperCase">✖</span>
-    One uppercase letter
+    ✔ One uppercase letter
   </div>
 
   <div [class.valid]="hasNumber">
-    <span *ngIf="hasNumber">✔</span>
-    <span *ngIf="!hasNumber">✖</span>
-    One number
+    ✔ One number
   </div>
 
   <div [class.valid]="hasSpecialChar">
-    <span *ngIf="hasSpecialChar">✔</span>
-    <span *ngIf="!hasSpecialChar">✖</span>
-    One special character
+    ✔ One special character
   </div>
 
 </div>
@@ -136,8 +139,10 @@
         <button type="submit" class="primary" [disabled]="form.invalid">
           Register
         </button>
-        <button type="button" class="cancel" (click)="cancel()">Cancel</button>
-      </div>
+<button type="button" class="cancel" routerLink="/login">
+  Cancel
+</button>     
+ </div>
 
       <button class="back" type="button" routerLink="/login">
         ← Back to Login
