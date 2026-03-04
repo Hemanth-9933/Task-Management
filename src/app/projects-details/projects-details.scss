@@ -354,3 +354,45 @@ textarea {
 .high { background: #ffebee; color: #c62828; }
 .medium { background: #fff8e1; color: #f9a825; }
 .low { background: #e3f2fd; color: #1565c0; }
+/* ================= LIST PAGE ================= */
+
+.separate-page {
+  margin-top: 30px;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+}
+
+.separate-page h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.task-table {
+  margin-top: 20px;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 15px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  padding: 16px;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  transition: 0.2s ease;
+}
+
+.table-row:hover {
+  background: #f9fafb;
+}
